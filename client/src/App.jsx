@@ -2,6 +2,7 @@ import './App.scss'
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useMessages } from './MessageProvider'
 import { MessageInput } from './components/MessageInput'
 import { ChatThreadDisplay } from './components/ChatThreadDisplay'
@@ -27,8 +28,10 @@ function App() {
             <Navbar.Brand href="#home">Visual Chatbot</Navbar.Brand>
             <Navbar.Collapse className="justify-content-end">
               <Nav>
-                <Nav.Link href="#" onClick={() => setSystemPromptModal(true)}>System Prompt</Nav.Link>
-                <Nav.Link href="#" onClick={() => setShowLlmConfigModal(true)}>LLM Settings</Nav.Link>
+                <NavDropdown title="Settings" id="settings-dropdown">
+                  <NavDropdown.Item onClick={() => setShowLlmConfigModal(true)} href="#">LLM connection</NavDropdown.Item>
+                  <NavDropdown.Item onClick={() => setSystemPromptModal(true)} href="#">System prompt</NavDropdown.Item>
+                </NavDropdown>
               </Nav>
             </Navbar.Collapse>
           </Container>
