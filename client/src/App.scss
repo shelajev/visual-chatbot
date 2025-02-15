@@ -1,0 +1,19 @@
+@import "bootstrap/scss/bootstrap";
+
+html, body, #root {
+  height: 100%;
+}
+
+.messageCard {
+  transition: box-shadow 0.3s;
+  animation: fadeIn 0.5s;
+
+  p:last-child, ul:last-child {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4) !important;
+  }
+}
