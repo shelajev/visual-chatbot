@@ -107,6 +107,16 @@ export const MessageContextProvider = ({ children }) => {
     });
   }, []);
 
+  const removeTool = useCallback(async (tool) => {
+    await fetch("/api/tools", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: tool.name }),
+    });
+  }, []);
+
   return (
     <MessageContext.Provider value={{ 
       config,
@@ -117,6 +127,7 @@ export const MessageContextProvider = ({ children }) => {
       resetMessages,
       tools,
       addTool,
+      removeTool,
       loading,
       isAiToolGenerationEnabled,
       toggleAiToolGeneration,
