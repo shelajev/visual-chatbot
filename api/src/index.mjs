@@ -8,6 +8,8 @@ import { ToolStore } from './toolStore.mjs';
 import { Tool } from './tool.mjs';
 import { LlmClient } from './llmClient.mjs';
 import fs from "fs";
+import { McpServer } from './mcpServer.mjs';
+import { McpServerStore } from './mcpServerStore.mjs';
 
 const app = express();
 const server = http.createServer(app);
@@ -23,6 +25,7 @@ const config = new Configuration(
 
 const messageStore = new MessageStore();
 const toolStore = new ToolStore();
+const mcpServerStore = new McpServerStore(toolStore);
 const llmClient = new LlmClient(
   config, 
   messageStore, 
@@ -65,6 +68,24 @@ app.delete("/api/messages", (req, res) => {
   messageStore.clearMessages();
   res.json({ status: 'ok' });
 });
+
+app.post("/api/mcp-servers", async (req, res) => {
+  if (!req.body.name || !req.body.command || !req.body.args) {
+    res.status(400).json({ status: 'error', message: 'Missing required fields' });
+    return;
+  }
+
+  try {
+    const server = new McpServer(req.body.name, req.body.command, req.body.args);
+    await server.bootstrap();
+    mcpServerStore.addMcpServer(server);
+    res.json({ status: 'ok' });
+  } catch (e) {
+    res.status(500).json({ status: 'error', message: e.message });
+    return;
+  }
+});
+
 
 app.post("/api/ai-tool-creation", async (req, res) => {
   const tool = new Tool(
@@ -183,7 +204,8 @@ server.listen(3000, () => {
 });
 
 ["SIGINT", "SIGTERM"].forEach(signal => {
-  process.on(signal, () => {
+  process.on(signal, async () => {
+    await mcpServerStore.shutdown();
     server.close();
     process.exit();
   });

@@ -1,0 +1,43 @@
+import { useEffect, useState } from 'react';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import { SystemPromptModal } from './SystemPromptModal';
+import { LlmConfigurationModal } from './LlmConfigurationModal';
+import { AiToolGenerationModal } from './AiToolGenerationModal';
+import { useMessages } from '../../MessageProvider';
+
+export const SettingsDropdown = () => {
+  const { config } = useMessages();
+
+  const [showLlmConfigModal, setShowLlmConfigModal] = useState(false);
+  const [showSystemPromptModal, setSystemPromptModal] = useState(false);
+  const [showAiToolGenerationModal, setShowAiToolGenerationModal] = useState(false);
+
+  useEffect(() => {
+    setShowLlmConfigModal(!config.hasApiKey);
+  }, [config, setShowLlmConfigModal]);
+
+  return (
+    <>
+      <NavDropdown title="Settings" id="settings-dropdown">
+        <NavDropdown.Item onClick={() => setShowLlmConfigModal(true)} href="#">LLM connection</NavDropdown.Item>
+        <NavDropdown.Item onClick={() => setSystemPromptModal(true)} href="#">System prompt</NavDropdown.Item>
+        <NavDropdown.Item onClick={() => setShowAiToolGenerationModal(true)} href="#">AI tool generation</NavDropdown.Item>
+      </NavDropdown>
+
+      <LlmConfigurationModal 
+        show={showLlmConfigModal} 
+        onClose={() => setShowLlmConfigModal(false)} 
+      />
+      
+      <SystemPromptModal 
+        show={showSystemPromptModal} 
+        onClose={() => setSystemPromptModal(false)} 
+      />
+
+      <AiToolGenerationModal
+        show={showAiToolGenerationModal}
+        onClose={() => setShowAiToolGenerationModal(false)}
+      />
+    </>
+  );
+}

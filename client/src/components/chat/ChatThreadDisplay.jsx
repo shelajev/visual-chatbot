@@ -2,7 +2,7 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Accordion from "react-bootstrap/Accordion";
-import { useMessages } from "../MessageProvider";
+import { useMessages } from "../../MessageProvider";
 import { MessageDisplay } from "./MessageDisplay";
 import { useCallback, useState } from "react";
 

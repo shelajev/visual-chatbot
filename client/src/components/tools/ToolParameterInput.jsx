@@ -25,6 +25,9 @@ export const ToolParameterInput = ({ onParameterUpdate }) => {
   return (
     <div className="mb-3">
       <div>Tool parameters</div>
+      <Form.Text className="text-muted">
+        Define the parameters that your tool will accept, which will be populated by the LLM when it calls this tool.
+      </Form.Text>
 
       <div className="ms-3">
         <Table striped>
@@ -63,7 +66,7 @@ export const ToolParameterInput = ({ onParameterUpdate }) => {
                 <td>
                   <Form.Control
                     type="text"
-                    placeholder="Description"
+                    placeholder="What is this parameter?"
                     value={param.description}
                     onChange={(e) => updateParameter(i, "description", e.target.value)}
                   />

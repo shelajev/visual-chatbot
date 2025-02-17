@@ -62,21 +62,31 @@ export const AddToolModal = ({ show, onClose }) => {
           <Modal.Title>Add Tool</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form.Group className="mb-3" controlId="tool-name">
+          <p>Create and add a tool using this form. This tool runs in the same Node environment as the API itself, although with appropriate error checking.</p>
+
+          <hr />
+
+            <Form.Group className="mb-4" controlId="tool-name">
               <Form.Label>Name</Form.Label>
               <Form.Control 
                 type="text" 
                 required 
                 pattern={NAME_PATTERN}
-                placeholder="Enter tool name" 
+                placeholder="Enter a name for the tool" 
                 value={name} 
                 onChange={e => setName(e.target.value)} />
+              <Form.Text className="text-muted">
+                Tool names can only contain letters, numbers, underscores, and hyphens
+              </Form.Text>
               <Form.Control.Feedback type="invalid">Tool names can only contain letters, numbers, underscores, and hyphens</Form.Control.Feedback>
             </Form.Group>
 
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-4">
               <Form.Label>Description</Form.Label>
               <Form.Control as="textarea" required rows={2} placeholder="Enter tool description"  value={description} onChange={e => setDescription(e.target.value)} />
+              <Form.Text className="text-muted">
+                The description will be sent to the LLM to help it determine when it should use this tool
+              </Form.Text>
             </Form.Group>
 
             <ToolParameterInput 

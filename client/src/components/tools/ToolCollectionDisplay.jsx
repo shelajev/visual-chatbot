@@ -1,4 +1,6 @@
 import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import { useMessages } from "../../MessageProvider";
@@ -6,18 +8,25 @@ import { ToolDisplay } from "./ToolDisplay";
 import { AddToolModal } from "./AddToolModal";
 
 export const ToolCollectionDisplay = () => {
-  const { tools, toggleAiToolGeneration, isAiToolGenerationEnabled } = useMessages();
+  const { tools } = useMessages();
   const [showAddToolModal, setShowAddToolModal] = useState(false);
 
   return (
     <>
       <Container fluid>
-        <h2>Tools</h2>
+        <Row>
+          <Col>
+            <p>Tools enable an LLM to <em>do</em> something, rather than only return information it was trained on.</p>
 
-        { tools.length === 0 && <p>No tools available</p> }
-        { tools.length > 0 && (
-          <p><em>Below are tools available for use by the LLM</em></p>
-        )}
+            <p>The LLM will look at the request, look at the available tools, and then use those tools to gather more information or complete the requested work.</p>
+
+            <p>Below are the tools currently available for the LLM to use in this chat session.</p>
+          </Col>
+        </Row>
+
+        <hr />
+
+        { tools.length === 0 && <p><em>There are currently no tools available</em></p> }
 
 
         {tools.map((tool) => (
@@ -31,10 +40,6 @@ export const ToolCollectionDisplay = () => {
           + Add tool
         </Button>
       </Container>
-
-      
-      <input id="ai-tool-generation-toggle" type="checkbox" checked={isAiToolGenerationEnabled} onChange={toggleAiToolGeneration} />
-      &nbsp; <label htmlFor="ai-tool-generation-toggle">Enable AI tool generation</label>
 
       <AddToolModal show={showAddToolModal} onClose={() => setShowAddToolModal(false)} />
     </>

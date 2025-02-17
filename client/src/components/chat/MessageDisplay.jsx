@@ -39,7 +39,7 @@ export const MessageDisplay = ({ message, onSelect }) => {
       <Col
         ref={ref}
         sm={expanded ? 12 : 8}
-        className={messageClasses.join(" ")}
+        className={"text-wrap text-break " + messageClasses.join(" ")}
         onClick={onSelect}
       >
 
@@ -78,8 +78,8 @@ export const MessageDisplay = ({ message, onSelect }) => {
         { message.content && (
           <ReactMarkdown>
             { 
-              message.content.length > 1000 ? 
-                `${message.content.substring(0, 1000)}...` : 
+              message.content.length > 500 && message.role === "tool" ? 
+                `${message.content.substring(0, 500)}...` : 
                 message.content 
             }
           </ReactMarkdown>

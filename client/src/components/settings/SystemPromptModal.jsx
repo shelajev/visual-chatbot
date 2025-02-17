@@ -1,7 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import { useMessages } from "../MessageProvider";
+import { useMessages } from "../../MessageProvider";
 import { useCallback, useEffect, useState } from "react";
 
 export const SystemPromptModal = ({ show, onClose }) => {
