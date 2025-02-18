@@ -39,10 +39,6 @@ app.get("/api", (req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.get("/api/config", (req, res) => {
-  res.json(config.toJSON());
-});
-
 app.post("/api/config", (req, res) => {
   if (!req.body.systemPrompt || !req.body.model || !req.body.endpoint) {
     res.status(400).json({ status: 'error', message: 'Missing required fields' });
@@ -84,6 +80,16 @@ app.post("/api/mcp-servers", async (req, res) => {
     res.status(500).json({ status: 'error', message: e.message });
     return;
   }
+});
+
+app.delete("/api/mcp-servers", async (req, res) => {
+  if (!req.body.name) {
+    res.status(400).json({ status: 'error', message: 'Missing required fields' });
+    return;
+  }
+
+  mcpServerStore.removeMcpServerByName(req.body.name);
+  res.json({ status: 'ok' });
 });
 
 
@@ -190,10 +196,14 @@ function setupEventListeners() {
   messageStore.onMessagesCleared(() => addSystemPrompt());
   toolStore.onToolAdded(tool => io.emit('toolAdded', tool.toJSON()));
   toolStore.onRemovedTool(tool => io.emit('toolRemoved', tool.toJSON()));
+  mcpServerStore.onMcpServerAdded(server => io.emit('mcpServerAdded', server.toJSON()));
+  mcpServerStore.onMcpServerRemoved(server => io.emit('mcpServerRemoved', server.toJSON()));
   
   io.on('connection', (client) => {
+    client.emit('config', config.toJSON());
     client.emit('messages', messageStore.getMessages());
     client.emit('tools', toolStore.getToolsJSON());
+    client.emit('mcpServers', mcpServerStore.getMcpServersJSON());
   });
 }
 

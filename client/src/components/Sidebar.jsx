@@ -1,6 +1,7 @@
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import { ToolCollectionDisplay } from './tools/ToolCollectionDisplay';
+import { McpCollectionDisplay } from './mcp/McpCollectionDisplay';
 
 export const Sidebar = () => {
   return (
@@ -13,7 +14,7 @@ export const Sidebar = () => {
         <ToolCollectionDisplay />
       </Tab>
       <Tab eventKey="local-mcp" title="MCP servers">
-        Coming soon!
+        <McpCollectionDisplay />
       </Tab>
     </Tabs>
   );

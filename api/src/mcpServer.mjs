@@ -49,6 +49,15 @@ export class McpServer {
   }
 
   async shutdown() {
-    await this.client.disconnect();
+    await this.client.close();
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      command: this.command,
+      args: this.args,
+      tools: this.tools.map(tool => ({ name: tool.name, description: tool.description })),
+    };
   }
 }

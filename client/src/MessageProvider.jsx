@@ -7,16 +7,9 @@ export const MessageContextProvider = ({ children }) => {
   const [config, setConfig] = useState(false);
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [mcpServers, setMcpServers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tools, setTools] = useState([]);
-
-  useEffect(() => {
-    fetch("/api/config")
-      .then((res) => res.json())
-      .then((config) => {
-        setConfig(config);
-      });
-  }, [setConfig])
 
   const updateConfiguration = useCallback(async (newConfig) => {
     const mergedConfig = { ...config, ...newConfig };
@@ -47,9 +40,19 @@ export const MessageContextProvider = ({ children }) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
+    socket.on("config", (config) => {
+      console.log("config", config);
+      setConfig(config);
+    });
+
     socket.on("messages", (messages) => {
       console.log("messages", messages);
       setMessages(messages);
+    });
+
+    socket.on("mcpServers", (mcpServers) => {
+      console.log("mcpServers", mcpServers);
+      setMcpServers(mcpServers);
     });
 
     socket.on("tools", (tools) => {
@@ -65,6 +68,16 @@ export const MessageContextProvider = ({ children }) => {
     socket.on("toolRemoved", (tool) => {
       console.log("toolRemoved", tool);
       setTools((prevTools) => prevTools.filter((t) => t.name !== tool.name));
+    });
+
+    socket.on("mcpServerAdded", (mcpServer) => {
+      console.log("mcpServerAdded", mcpServer);
+      setMcpServers((prevMcpServers) => [...prevMcpServers, mcpServer]);
+    });
+
+    socket.on("mcpServerRemoved", (mcpServer) => {
+      console.log("mcpServerRemoved", mcpServer);
+      setMcpServers((prevMcpServers) => prevMcpServers.filter((m) => m.name !== mcpServer.name));
     });
 
     return () => socket.disconnect();
@@ -117,18 +130,46 @@ export const MessageContextProvider = ({ children }) => {
     });
   }, []);
 
+  const addMcpServer = useCallback(async (mcpServer) => {
+    await fetch("/api/mcp-servers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(mcpServer),
+    });
+  }, []);
+
+  const removeMcpServer = useCallback(async (mcpServer) => {
+    await fetch("/api/mcp-servers", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: mcpServer.name }),
+    });
+  }, []);
+
   return (
     <MessageContext.Provider value={{ 
       config,
       updateConfiguration,
+
       connected,
+      loading,
+
       messages,
       sendMessage,
       resetMessages,
+
       tools,
       addTool,
       removeTool,
-      loading,
+
+      mcpServers,
+      addMcpServer,
+      removeMcpServer,
+      
       isAiToolGenerationEnabled,
       toggleAiToolGeneration,
      }}>

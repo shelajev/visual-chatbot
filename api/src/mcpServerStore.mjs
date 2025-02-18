@@ -28,6 +28,25 @@ export class McpServerStore {
   }
 
   /**
+   * Remove an MCP Server
+   * @param {string} mcpServerName The name of the MCP Server to remove
+   */
+  removeMcpServerByName(mcpServerName) {
+    const mcpServer = this.mcpServers.find(server => server.name === mcpServerName);
+    if (!mcpServer) {
+      return;
+    }
+    
+    this.mcpServers = this.mcpServers.filter(server => server.name !== mcpServerName);
+
+    mcpServer.getTools().forEach(tool => {
+      this.toolStore.removeToolByName(tool.name);
+    });
+
+    this.eventEmitter.emit('mcpServerRemoved', mcpServer);
+  }
+
+  /**
    * Get all MCP Servers
    * @returns {McpServer[]} The MCP Servers
    */
@@ -35,5 +54,21 @@ export class McpServerStore {
     return this.mcpServers;
   }
 
+  onMcpServerAdded(callback) {
+    this.eventEmitter.on('mcpServerAdded', callback);
+  }
 
+  onMcpServerRemoved(callback) {
+    this.eventEmitter.on('mcpServerRemoved', callback);
+  }
+
+  getMcpServersJSON() {
+    return this.mcpServers.map(server => server.toJSON());
+  }
+
+  async shutdown() {
+    for (const mcpServer of this.mcpServers) {
+      await mcpServer.shutdown();
+    }
+  }
 }
