@@ -2,13 +2,13 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { useMessages } from "../../MessageProvider";
+import { useBackend } from "../../BackendProvider";
 import { McpServerDisplay } from "./McpServerDisplay";
 import { AddMcpServerDialog } from "./AddMcpServerDialog";
 import { useState } from "react";
 
 export const McpCollectionDisplay = () => {
-  const { mcpServers } = useMessages();
+  const { mcpServers } = useBackend();
   const [showAddMcpServerDialog, setShowAddMcpServerDialog] = useState(false);
 
   return (

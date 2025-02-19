@@ -3,10 +3,10 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { SystemPromptModal } from './SystemPromptModal';
 import { LlmConfigurationModal } from './LlmConfigurationModal';
 import { AiToolGenerationModal } from './AiToolGenerationModal';
-import { useMessages } from '../../MessageProvider';
+import { useBackend } from '../../BackendProvider';
 
 export const SettingsDropdown = () => {
-  const { config } = useMessages();
+  const { config } = useBackend();
 
   const [showLlmConfigModal, setShowLlmConfigModal] = useState(false);
   const [showSystemPromptModal, setSystemPromptModal] = useState(false);

@@ -1,8 +1,8 @@
 import Button from "react-bootstrap/Button";
-import { useMessages } from "../../MessageProvider";
+import { useBackend } from "../../BackendProvider";
 
 export const ToolDisplay = ({ tool }) => {
-  const { removeTool } = useMessages();
+  const { removeTool } = useBackend();
 
   const onRemove = () => {
     if (confirm(`Are you sure you want to remove tool ${tool.name}?`)) {

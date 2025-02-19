@@ -1,10 +1,10 @@
-import { useMessages } from '../../MessageProvider';
+import { useBackend } from '../../BackendProvider';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 export const AiToolGenerationModal = ({ show, onClose }) => {
-  const { toggleAiToolGeneration, isAiToolGenerationEnabled } = useMessages();
+  const { toggleAiToolGeneration, isAiToolGenerationEnabled } = useBackend();
 
   return (
     <Modal size="lg" show={show} onHide={onClose}>

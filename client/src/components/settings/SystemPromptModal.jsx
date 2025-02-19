@@ -1,11 +1,11 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import { useMessages } from "../../MessageProvider";
+import { useBackend } from "../../BackendProvider";
 import { useCallback, useEffect, useState } from "react";
 
 export const SystemPromptModal = ({ show, onClose }) => {
-  const { config, updateConfiguration, resetMessages, sendMessage, messages } = useMessages();
+  const { config, updateConfiguration, resetMessages, sendMessage, messages } = useBackend();
   const [systemPrompt, setSystemPrompt] = useState(config.systemPrompt);
   const [desireToResetMessages, setDesireToResetMessages] = useState(false);
   const [replayMessages, setReplayMessages] = useState(false);

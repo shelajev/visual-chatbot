@@ -1,9 +1,20 @@
 import { createContext, useEffect, useState, useCallback, useContext, useMemo } from "react";
 import { io } from "socket.io-client";
+import { toast } from "react-toastify";
 
-const MessageContext = createContext();
+const BackendContext = createContext();
 
-export const MessageContextProvider = ({ children }) => {
+async function makeRequest(url, options) {
+  const response = await fetch(url, options);
+  const body = await response.json();
+  if (!response.ok) {
+    toast.error("Request error: " + body.message);
+    throw new Error(response.statusText);
+  }
+  return body;
+}
+
+export const BackendContextProvider = ({ children }) => {
   const [config, setConfig] = useState(false);
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -14,7 +25,7 @@ export const MessageContextProvider = ({ children }) => {
   const updateConfiguration = useCallback(async (newConfig) => {
     const mergedConfig = { ...config, ...newConfig };
 
-    const response = await fetch("/api/config", {
+    const updatedConfig = await makeRequest("/api/config", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -22,7 +33,6 @@ export const MessageContextProvider = ({ children }) => {
       body: JSON.stringify(mergedConfig),
     });
 
-    const updatedConfig = await response.json();
     setConfig(updatedConfig);
   }, [setConfig, config]);
 
@@ -86,7 +96,7 @@ export const MessageContextProvider = ({ children }) => {
   const sendMessage = useCallback(async (message) => {
     setLoading(true);
     try {
-      await fetch("/api/messages", {
+      await makeRequest("/api/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,19 +109,19 @@ export const MessageContextProvider = ({ children }) => {
   }, []);
 
   const resetMessages = useCallback(async () => {
-    await fetch("/api/messages", {
+    await makeRequest("/api/messages", {
       method: "DELETE",
     });
   }, []);
 
   const toggleAiToolGeneration = useCallback(async () => {
-    await fetch("/api/ai-tool-creation", {
+    await makeRequest("/api/ai-tool-creation", {
       method: isAiToolGenerationEnabled ? "DELETE" : "POST",
     });
   }, [isAiToolGenerationEnabled]);
 
   const addTool = useCallback(async (tool) => {
-    await fetch("/api/tools", {
+    await makeRequest("/api/tools", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -121,7 +131,7 @@ export const MessageContextProvider = ({ children }) => {
   }, []);
 
   const removeTool = useCallback(async (tool) => {
-    await fetch("/api/tools", {
+    await makeRequest("/api/tools", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -131,7 +141,7 @@ export const MessageContextProvider = ({ children }) => {
   }, []);
 
   const addMcpServer = useCallback(async (mcpServer) => {
-    await fetch("/api/mcp-servers", {
+    await makeRequest("/api/mcp-servers", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -141,7 +151,7 @@ export const MessageContextProvider = ({ children }) => {
   }, []);
 
   const removeMcpServer = useCallback(async (mcpServer) => {
-    await fetch("/api/mcp-servers", {
+    await makeRequest("/api/mcp-servers", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -151,7 +161,7 @@ export const MessageContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <MessageContext.Provider value={{ 
+    <BackendContext.Provider value={{ 
       config,
       updateConfiguration,
 
@@ -174,8 +184,8 @@ export const MessageContextProvider = ({ children }) => {
       toggleAiToolGeneration,
      }}>
       { config ? children : "Loading..." }
-    </MessageContext.Provider>
+    </BackendContext.Provider>
   );
 };
 
-export const useMessages = () => useContext(MessageContext);
+export const useBackend = () => useContext(BackendContext);

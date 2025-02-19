@@ -1,16 +1,18 @@
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Spinner from "react-bootstrap/Spinner";
 import { useCallback, useState } from "react";
-import { useMessages } from "../../MessageProvider";
+import { useBackend } from "../../BackendProvider";
 
 const NAME_PATTERN = "[a-zA-Z0-9_\-]+";
 
 export const AddMcpServerDialog = ({ show, onClose }) => {
-  const { addMcpServer } = useMessages();
+  const { addMcpServer } = useBackend();
   const [name, setName] = useState("");
   const [command, setCommand] = useState("");
   const [validated, setValidated] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -31,8 +33,11 @@ export const AddMcpServerDialog = ({ show, onClose }) => {
       args: commandArgs,
     };
 
+    setLoading(true);
+
     addMcpServer(mcpServer)
-      .then(() => handleClose());
+      .then(() => handleClose())
+      .finally(() => setLoading(false));
   };
 
   const handleClose = useCallback(() => {
@@ -88,8 +93,10 @@ export const AddMcpServerDialog = ({ show, onClose }) => {
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="primary" type="submit">
-            Add MCP Server
+          <Button variant="primary" type="submit" disabled={loading}>
+            { loading ? (
+              <Spinner animation="border" size="sm" />
+            ) : "Add MCP Server" }
           </Button>
         </Modal.Footer>
       </Form>

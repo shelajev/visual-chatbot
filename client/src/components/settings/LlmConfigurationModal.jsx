@@ -1,11 +1,11 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import { useMessages } from "../../MessageProvider";
+import { useBackend } from "../../BackendProvider";
 import { useCallback, useState } from "react";
 
 export const LlmConfigurationModal = ({ show, onClose }) => {
-  const { config, updateConfiguration } = useMessages();
+  const { config, updateConfiguration } = useBackend();
   const [apiKey, setApiKey] = useState("");
   const [model, setModel] = useState(config.model);
   const [endpoint, setEndpoint] = useState(config.endpoint);

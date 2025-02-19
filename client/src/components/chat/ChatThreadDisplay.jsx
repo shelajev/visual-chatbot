@@ -2,12 +2,12 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Accordion from "react-bootstrap/Accordion";
-import { useMessages } from "../../MessageProvider";
+import { useBackend } from "../../BackendProvider";
 import { MessageDisplay } from "./MessageDisplay";
 import { useCallback, useState } from "react";
 
 export const ChatThreadDisplay = () => {
-  const { messages } = useMessages();
+  const { messages } = useBackend();
   const [selectedMessageIndex, setSelectedMessageIndex] = useState(null);
 
   const handleSelectMessage = useCallback((message) => {

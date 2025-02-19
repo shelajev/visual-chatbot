@@ -1,8 +1,8 @@
 import Button from "react-bootstrap/Button";
-import { useMessages } from "../../MessageProvider";
+import { useBackend } from "../../BackendProvider";
 
 export const McpServerDisplay = ({ mcpServer }) => {
-  const { removeMcpServer } = useMessages();
+  const { removeMcpServer } = useBackend();
 
   const onRemove = () => {
     if (confirm(`Are you sure you want to remove MCP server ${mcpServer.name}?\n\nThis will remove all tools associated with this server.`)) {

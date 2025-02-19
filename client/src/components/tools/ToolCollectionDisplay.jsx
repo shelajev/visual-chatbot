@@ -3,12 +3,12 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import { useMessages } from "../../MessageProvider";
+import { useBackend } from "../../BackendProvider";
 import { ToolDisplay } from "./ToolDisplay";
 import { AddToolModal } from "./AddToolModal";
 
 export const ToolCollectionDisplay = () => {
-  const { tools } = useMessages();
+  const { tools } = useBackend();
   const [showAddToolModal, setShowAddToolModal] = useState(false);
 
   return (

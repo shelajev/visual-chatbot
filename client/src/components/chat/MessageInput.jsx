@@ -3,10 +3,10 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
-import { useMessages } from "../../MessageProvider";
+import { useBackend } from "../../BackendProvider";
 
 export const MessageInput = () => {
-  const { sendMessage, resetMessages, loading } = useMessages();
+  const { sendMessage, resetMessages, loading } = useBackend();
   const [input, setInput] = useState("");
 
   return (

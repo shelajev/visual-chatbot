@@ -3,13 +3,13 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useCallback, useState } from "react";
 import { ToolParameterInput } from "./ToolParameterInput";
-import { useMessages } from "../../MessageProvider";
+import { useBackend } from "../../BackendProvider";
 
 const NAME_PATTERN = "[a-zA-Z0-9_\-]+";
 const NAME_REGEX = new RegExp("/" + NAME_PATTERN + "/");
 
 export const AddToolModal = ({ show, onClose }) => {
-  const { addTool } = useMessages();
+  const { addTool } = useBackend();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [parameters, setParameters] = useState([]);

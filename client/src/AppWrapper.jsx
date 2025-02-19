@@ -1,11 +1,16 @@
-import { MessageContextProvider } from './MessageProvider'
+import { BackendContextProvider } from './BackendProvider'
+import { ToastContainer } from 'react-toastify';
 import App from './App';
 
 function AppWrapper() {
   return (
-    <MessageContextProvider>
+    <BackendContextProvider>
       <App />
-    </MessageContextProvider>
+      <ToastContainer 
+        position="bottom-right"
+        autoClose={5000}
+      />
+    </BackendContextProvider>
   )
 }
 
