@@ -14,12 +14,21 @@ export class McpServer {
     });
 
     this.transport = new StdioClientTransport({
-      command, args,
+      command, 
+      args,
+      stderr: "pipe",
     });
   }
 
   async bootstrap() {
-    await this.client.connect(this.transport);
+    try {
+      await this.client.connect(this.transport);
+    } catch (e) {
+      console.log(this.client);
+      console.log(this.transport);
+      console.error("Error connecting to client", e);
+      throw e;
+    }
 
     const { tools: availableTools } = await this.client.listTools();
 

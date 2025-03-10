@@ -60,6 +60,11 @@ export const BackendContextProvider = ({ children }) => {
       setMessages(messages);
     });
 
+    socket.on("messageDeleted", (message) => {
+      console.log("messageDeleted", message);
+      setMessages((prevMessages) => prevMessages.filter((m) => m.content !== message.content));
+    });
+
     socket.on("mcpServers", (mcpServers) => {
       console.log("mcpServers", mcpServers);
       setMcpServers(mcpServers);
@@ -113,6 +118,16 @@ export const BackendContextProvider = ({ children }) => {
       method: "DELETE",
     });
   }, []);
+
+  const deleteMessage = useCallback(async (message) => {
+    await makeRequest("/api/messages", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message }),
+    });
+  });
 
   const toggleAiToolGeneration = useCallback(async () => {
     await makeRequest("/api/ai-tool-creation", {
@@ -170,6 +185,7 @@ export const BackendContextProvider = ({ children }) => {
 
       messages,
       sendMessage,
+      deleteMessage,
       resetMessages,
 
       tools,

@@ -61,7 +61,11 @@ app.post("/api/messages", async (req, res) => {
 });
 
 app.delete("/api/messages", (req, res) => {
-  messageStore.clearMessages();
+  if (req.body.message) {
+    messageStore.deleteMessage(req.body.message);
+  } else {
+    messageStore.clearMessages();
+  }
   res.json({ status: 'ok' });
 });
 
@@ -77,7 +81,7 @@ app.post("/api/mcp-servers", async (req, res) => {
     mcpServerStore.addMcpServer(server);
     res.json({ status: 'ok' });
   } catch (e) {
-    res.status(500).json({ status: 'error', message: e.message });
+    res.status(500).json({ status: 'error', message: "Unable to start MCP server. Validate the startup command. " + e.message });
     return;
   }
 });
@@ -88,7 +92,7 @@ app.delete("/api/mcp-servers", async (req, res) => {
     return;
   }
 
-  mcpServerStore.removeMcpServerByName(req.body.name);
+  await mcpServerStore.removeMcpServerByName(req.body.name);
   res.json({ status: 'ok' });
 });
 
@@ -192,6 +196,7 @@ function addSystemPrompt() {
 
 function setupEventListeners() {
   messageStore.onNewMessage(message => io.emit('newMessage', message));
+  messageStore.onMessageDeleted(message => io.emit('messageDeleted', message));
   messageStore.onMessagesCleared(() => io.emit('messages', []));
   messageStore.onMessagesCleared(() => addSystemPrompt());
   toolStore.onToolAdded(tool => io.emit('toolAdded', tool.toJSON()));

@@ -11,7 +11,10 @@ const server = new McpServer({
 server.tool(
   "get-hourly-forecast",
   "Get the hourly forecast for a given location",
-  { latitude: z.number().describe("The latitude coordinate"), longitude: z.number().describe("The longitude coordinate") },
+  { 
+    latitude: z.number().describe("The latitude coordinate"), 
+    longitude: z.number().describe("The longitude coordinate") 
+  },
   async ({ latitude, longitude }) => {
     try {
       const forecast = await WeatherService.getHourlyForecast(latitude, longitude);
@@ -38,7 +41,10 @@ server.tool(
 server.tool(
   "get-forecast",
   "Get the forecast for the next few days for a given location",
-  { latitude: z.number().describe("The latitude coordinate"), longitude: z.number().describe("The longitude coordinate") },
+  { 
+    latitude: z.number().describe("The latitude coordinate"), 
+    longitude: z.number().describe("The longitude coordinate") 
+  },
   async ({ latitude, longitude }) => {
     try {
       const forecast = await WeatherService.getForecast(latitude, longitude);
@@ -66,7 +72,10 @@ server.tool(
 server.tool(
   "get-weather-warnings",
   "Get applicable weather warnings for a given location",
-  { latitude: z.number().describe("The latitude coordinate"), longitude: z.number().describe("The longitude coordinate") },
+  { 
+    latitude: z.number().describe("The latitude coordinate"), 
+    longitude: z.number().describe("The longitude coordinate") 
+  },
   async ({ latitude, longitude }) => {
     try {
       const warnings = await WeatherService.getWarnings(latitude, longitude);

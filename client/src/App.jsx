@@ -6,8 +6,11 @@ import { MessageInput } from './components/chat/MessageInput';
 import { ChatThreadDisplay } from './components/chat/ChatThreadDisplay';
 import { Sidebar } from './components/Sidebar';
 import { SettingsDropdown } from './components/settings/SettingsDropdown';
+import { useTutorial } from './components/tutorial/TutorialContextProvider';
 
 function App() {
+  const { openTutorialModal } = useTutorial();
+
   return (
     <>
       <div className="d-flex flex-column h-100">
@@ -16,6 +19,7 @@ function App() {
             <Navbar.Brand href="#home">Visual Chatbot</Navbar.Brand>
             <Navbar.Collapse className="justify-content-end">
               <Nav>
+                <Nav.Link onClick={openTutorialModal}>Tutorial</Nav.Link>
                 <SettingsDropdown />
               </Nav>
             </Navbar.Collapse>

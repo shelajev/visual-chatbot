@@ -31,11 +31,13 @@ export class McpServerStore {
    * Remove an MCP Server
    * @param {string} mcpServerName The name of the MCP Server to remove
    */
-  removeMcpServerByName(mcpServerName) {
+  async removeMcpServerByName(mcpServerName) {
     const mcpServer = this.mcpServers.find(server => server.name === mcpServerName);
     if (!mcpServer) {
       return;
     }
+
+    await mcpServer.shutdown();
     
     this.mcpServers = this.mcpServers.filter(server => server.name !== mcpServerName);
 

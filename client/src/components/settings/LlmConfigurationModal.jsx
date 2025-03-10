@@ -18,7 +18,7 @@ export const LlmConfigurationModal = ({ show, onClose }) => {
   return (
     <Modal size="xl" show={show} backdrop={config.hasApiKey ? true : "static"} keyboard={config.hasApiKey} onHide={handleClose}>
       <Modal.Header>
-        <Modal.Title>LLM Configuration</Modal.Title>
+        <Modal.Title>LLM connection configuration</Modal.Title>
       </Modal.Header>
 
       <Form onSubmit={e => {

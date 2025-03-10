@@ -12,6 +12,15 @@ export class MessageStore {
     this.eventEmitter.emit('newMessage', message);
   }
 
+  deleteMessage(message) {
+    if (message.content)
+      this.messages = this.messages.filter(m => m.role !== message.role || m.content !== message.content);
+    else if (message.tool_call_id)
+      this.messages = this.messages.filter(m => m.role !== message.role || m.tool_call_id !== message.tool_call_id);
+
+    this.eventEmitter.emit('messageDeleted', message);
+  }
+
   getMessages() {
     return this.messages;
   }
@@ -27,5 +36,9 @@ export class MessageStore {
   
   onMessagesCleared(callback) {
     this.eventEmitter.on('messagesCleared', callback);
+  }
+
+  onMessageDeleted(callback) {
+    this.eventEmitter.on('messageDeleted', callback);
   }
 }
