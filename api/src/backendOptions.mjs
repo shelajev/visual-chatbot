@@ -54,7 +54,7 @@ export class BackendOptions {
       return {
         name: "Docker Model Runner (internal)",
         endpoint: "http://model-runner.docker.internal/engines/llama.cpp/v1/chat/completions",
-        models: response.data.map(data => data.id),
+        models: response.map(data => data.id),
         requiresApiKey: false,
       };
     } catch (e) {}
