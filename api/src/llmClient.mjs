@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import { Agent, fetch } from "undici";
 import { Configuration } from "./config.mjs";
 import { MessageStore } from "./messageStore.mjs";
 import { ToolStore } from "./toolStore.mjs";
@@ -15,6 +15,12 @@ export class LlmClient {
     this.config = config;
     this.messageStore = messageStore;
     this.toolStore = toolStore;
+
+    this.socketDispatcher = new Agent({
+      connect: {
+        socketPath: '/var/run/docker.sock'
+      }
+    })
   }
   
   async sendMessage(messageContent) {
@@ -61,7 +67,7 @@ export class LlmClient {
     const payload = {
       messages: this.messageStore.getMessages(),
       model: this.config.model,
-      temperature: 0.7,
+      // temperature: 0.7,
       stream: false,
     };
 
@@ -69,11 +75,18 @@ export class LlmClient {
       payload.tools = this.toolStore.getToolConfiguration();
     }
 
-    const response = await fetch(this.config.endpoint, {
+    const requestOptions = {
       method: "POST",
       headers: headers,
       body: JSON.stringify(payload),
-    });
+    };
+
+    console.log("endpoint", this.config.endpoint);
+
+    if (this.config.endpoint.indexOf("docker-socket") > -1) {
+      requestOptions.dispatcher = this.socketDispatcher;
+    }
+    const response = await fetch(this.config.endpoint, requestOptions);
 
     if (response.status !== 200) {
       const body = await response.text();

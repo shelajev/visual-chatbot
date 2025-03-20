@@ -7,21 +7,16 @@ import { MessageStore } from './messageStore.mjs';
 import { ToolStore } from './toolStore.mjs';
 import { Tool } from './tool.mjs';
 import { LlmClient } from './llmClient.mjs';
-import fs from "fs";
 import { McpServer } from './mcpServer.mjs';
 import { McpServerStore } from './mcpServerStore.mjs';
+import { BackendOptions } from './backendOptions.mjs';
 
 const app = express();
 const server = http.createServer(app);
 const io = new SocketIo(server);
 dotenv.config();
 
-const config = new Configuration(
-  process.env.OPENAI_API_KEY,
-  fs.readFileSync("./src/initialPrompt.txt", "utf-8"),
-  "gpt-4o",
-  "https://api.openai.com/v1/chat/completions"
-);
+const config = new Configuration();
 
 const messageStore = new MessageStore();
 const toolStore = new ToolStore();
@@ -39,6 +34,11 @@ app.get("/api", (req, res) => {
   res.json({ status: 'ok' });
 });
 
+app.get("/api/config", (req, res) => {
+  BackendOptions.getConfigurations()
+    .then(config => res.json(config));
+});
+
 app.post("/api/config", (req, res) => {
   if (!req.body.systemPrompt || !req.body.model || !req.body.endpoint) {
     res.status(400).json({ status: 'error', message: 'Missing required fields' });
@@ -51,12 +51,16 @@ app.post("/api/config", (req, res) => {
   config.setModel(req.body.model);
   config.setEndpoint(req.body.endpoint);  
   config.setSystemPrompt(req.body.systemPrompt);
+
+  console.log("Config updated", config.toJSON());
   
   res.json(config.toJSON());
 });
 
 app.post("/api/messages", async (req, res) => {
-  await llmClient.sendMessage(req.body.message);
+  let message = req.body.message;
+
+  await llmClient.sendMessage(message);
   res.json({ status: 'ok' });
 });
 

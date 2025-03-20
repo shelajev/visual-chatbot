@@ -22,6 +22,10 @@ export const BackendContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [tools, setTools] = useState([]);
 
+  const getBackendOptions = useCallback(() => {
+    return makeRequest("/api/config");
+  });
+
   const updateConfiguration = useCallback(async (newConfig) => {
     const mergedConfig = { ...config, ...newConfig };
 
@@ -178,6 +182,7 @@ export const BackendContextProvider = ({ children }) => {
   return (
     <BackendContext.Provider value={{ 
       config,
+      getBackendOptions,
       updateConfiguration,
 
       connected,
