@@ -50,14 +50,14 @@ export class BackendOptions {
   static async #createModelRunnerConfiguration() {
     try {
       await dns.promises.resolve("model-runner.docker.internal");
-      const response = await fetch("http://model-runner.docker.internal/exp/vDD4.40/engines/v1/models").then(r => r.json());
+      const response = await fetch("http://model-runner.docker.internal/engines/v1/models").then(r => r.json());
       return {
         name: "Docker Model Runner (internal)",
         endpoint: "http://model-runner.docker.internal/engines/llama.cpp/v1/chat/completions",
         models: response.map(data => data.id),
         requiresApiKey: false,
       };
-    } catch (e) {}
+    } catch (e) { console.log(e); }
 
     try {
       const response = await fetch("http://localhost/exp/vDD4.40/engines/v1/models", {
