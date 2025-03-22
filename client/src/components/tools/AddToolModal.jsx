@@ -94,7 +94,7 @@ export const AddToolModal = ({ show, onClose }) => {
             />
 
             <Form.Group className="mb-3">
-              <Form.Label>Function code</Form.Label>
+              <Form.Label>JavaScript function code</Form.Label>
               <Form.Control as="textarea" required rows={3} placeholder="What will run when the tool is executed?"  value={code} onChange={e => setCode(e.target.value)} />
               <Form.Text className="text-muted">
                 The return value of this code will be the output of the tool. Parameters will be passed in using the names specified above. 
