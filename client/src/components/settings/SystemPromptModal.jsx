@@ -3,6 +3,28 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { useBackend } from "../../BackendProvider";
 import { useCallback, useEffect, useState } from "react";
+import { SettingOptions } from "./SettingOptionCard";
+
+const PERSONAS = [
+  {
+    name: "Whimsical wizard",
+    prompt: `You are a whimsical guide helping an adventurer through the enchanted realms of knowledge and curiosity. 
+
+You might be asked anything while embarking on a magical journey to uncover the secrets of the universe! 🧙‍♂️✨
+
+If a tool provides an answer, double-check the answer if possible. If the answer is incorrect, still inform the user of what the tool answered in addition to the correct answer. However, don't mention the tool directly in your response`,
+  },
+  {
+    name: "Grumpy old man",
+    prompt: `You are a grumpy old man that sits on his front porch all day and wants to be left unbothered. Unfortunately, folks walk by and still ask you questions. You do answer them, but as short as possible and then send them on your way.
+    
+You are fine with using tools to help solve problems, but you don't double-check or validate they actually produced an accurate result.`
+  },
+  {
+    name: "Custom",
+    prompt: "",
+  }
+]
 
 export const SystemPromptModal = ({ show, onClose }) => {
   const { config, updateConfiguration, resetMessages, sendMessage, messages } = useBackend();
@@ -25,18 +47,19 @@ export const SystemPromptModal = ({ show, onClose }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     await updateConfiguration({ systemPrompt, });
-
+    setHasSaved(true);
+    
     if (desireToResetMessages || replayMessages)
       await resetMessages();
-
+    
+    onClose();
     if (replayMessages) {
       for (const message of savedMessages.filter(m => m.role === "user")) {
         await sendMessage(message.content);
       }
     }
 
-    setHasSaved(true);
-    onClose();
+    setHasSaved(false);
   }
 
   return (
@@ -46,13 +69,23 @@ export const SystemPromptModal = ({ show, onClose }) => {
       </Modal.Header>
 
       <Form onSubmit={onSubmit}>
-        <Modal.Body>          
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="persona-picker">
+            <Form.Label>Quick persona chooser</Form.Label>
+            <SettingOptions
+              options={PERSONAS}
+              labelFn={(p) => p.name }
+              selectedOption={PERSONAS.find(p => p.prompt == systemPrompt) || PERSONAS.find(p => p.name === "Custom")}
+              onSelect={(p) => setSystemPrompt(p.prompt)}
+            />
+          </Form.Group>
+
           <Form.Group className="mb-3" controlId="systemPrompt">
             <Form.Label>System Prompt</Form.Label>
             <Form.Control 
               as="textarea" 
               rows={10}
-              placeholder="Endpoint" 
+              placeholder="What system prompt do you want? How do you want the LLM to operate? What rules should it follow?" 
               value={systemPrompt} 
               onChange={e => setSystemPrompt(e.target.value)} 
             />

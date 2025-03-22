@@ -3,6 +3,7 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { useBackend } from "../../BackendProvider";
 import { useCallback, useEffect, useState } from "react";
+import { SettingOptions } from "./SettingOptionCard";
 
 export const LlmConfigurationModal = ({ show, onClose }) => {
   const { config, getBackendOptions, updateConfiguration } = useBackend();
@@ -17,6 +18,12 @@ export const LlmConfigurationModal = ({ show, onClose }) => {
     if (!show) return;
     getBackendOptions().then(setBackendOptions);
   }, [show]);
+
+  useEffect(() => {
+    if (!show) return;
+    setModel(config.model);
+    setEndpoint(config.endpoint);
+  }, [show, config]);
 
   useEffect(() => {
     if (!backendOptions) return;
@@ -51,38 +58,26 @@ export const LlmConfigurationModal = ({ show, onClose }) => {
 
           <Form.Group className="mb-3" controlId="llmBackend">
             <Form.Label>LLM backend</Form.Label>
-            <div>
-              { backendOptions.map((configOption, index) => (
-                <Form.Check
-                  key={index}
-                  inline
-                  label={configOption.name}
-                  name="llmBackend"
-                  type={"radio"}
-                  id={`inline-1-${index}`}
-                  checked={selectedBackend === configOption}
-                  onChange={() => {
-                    setEndpoint(configOption.endpoint);
-                    setSelectedBackend(configOption);
-                    setApiKeyRequired(configOption.requiresApiKey);
-                  }}
-                />
-              ))}
-            </div>
+            <SettingOptions
+              options={backendOptions}
+              labelFn={(option) => option.name}
+              selectedOption={selectedBackend}
+              onSelect={(option) => {
+                setEndpoint(option.endpoint);
+                setSelectedBackend(option);
+                setApiKeyRequired(option.requiresApiKey);
+              }}
+            />
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="model">
             <Form.Label>Model</Form.Label>
-            <Form.Select 
-              aria-label="Default select example"
-              onChange={(e) => { console.log("VALUE", e.target.value); setModel(e.target.value) }}
-              value={model}
-            >
-              <option>Choose a model...</option>
-              { selectedBackend?.models.map((m, index) => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </Form.Select>
+            <SettingOptions
+              options={selectedBackend?.models}
+              labelFn={(m) => m.indexOf("/") > -1 ? m.split("/")[1] : m}
+              selectedOption={model}
+              onSelect={(m) => setModel(m)}
+            />
           </Form.Group>
 
           { apiKeyRequired && (
