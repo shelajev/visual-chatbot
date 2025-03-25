@@ -24,22 +24,28 @@ Once the container has started, you can open the app at http://localhost:3000/.
 
 ### LLM configuration
 
-The application obviously needs to have an LLM to operate against. 
+The application obviously needs to have an LLM to operate against. When it starts, a configuration modal will pop up, where you will have the ability to choose between the following LLM backends:
 
-#### OpenAI (default)
+- **OpenAI** (an API key will be required)
+- **Ollama** - will auto-detect whether it connects using localhost or `host.docker.internal` (if running in a container)
+- **Docker Model Runner** - will auto-detect if it needs to connect via localhost or `model-runner.docker.internal`
 
-1. Obtain an OpenAI API key. The only required permission is the chat completions endpoint.
-2. In the LLM configuration modal (which will launch at startup), enter the API key.
+Once the backend is selected, a collection of models are presented. For Ollama and the Docker Model Runner, the list consists of those currently downloaded.
 
-#### Ollama
+## Development setup
 
-In the LLM configuration modal, enter the following details:
+If you wish to setup the development environment, do the following:
 
-1. **Endpoint:** http://host.docker.internal:11434/v1/chat/completions
-  - This uses the `host.docker.internal` name since the app is running inside a container and needs to access Ollama running on the host
-2. **Model:** - whatever model you want to use (such as `llama3.2`)
-3. **API Key:** - enter anything... it won't be used but is currently a required field.
+1. Run the following in each of the `api` and `client` directories:
 
+    ```console
+    npm install
+    npm run dev
+    ```
+
+2. Open your browser to [http://localhost:5173/](http://localhost:5173/).
+
+And don't worry... a containerized setup will be coming soon ;)
 
 ## Contributions
 
