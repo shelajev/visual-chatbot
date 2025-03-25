@@ -76,11 +76,17 @@ export const MessageDisplay = ({ message, onSelect }) => {
         )}
 
         { message.content && (
-          <ReactMarkdown>
+          <ReactMarkdown
+            components={{
+              p({ children, ...props }) {
+                return <p style={{ whiteSpace: "pre-wrap"}}>{ children }</p>
+              }
+            }}
+          >
             { 
               message.content.length > 500 && message.role === "tool" ? 
                 `${message.content.substring(0, 500)}...` : 
-                message.content 
+                message.content
             }
           </ReactMarkdown>
         )}

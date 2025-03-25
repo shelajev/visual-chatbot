@@ -58,6 +58,7 @@ export class Configuration {
       systemPrompt: this.systemPrompt,
       model: this.model,
       endpoint: this.endpoint,
+      configured: !!this.endpoint,
     };
   }
 

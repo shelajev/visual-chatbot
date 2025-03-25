@@ -49,7 +49,7 @@ export const LlmConfigurationModal = ({ show, onClose }) => {
       <Form onSubmit={e => {
         e.preventDefault();
         updateConfiguration({ 
-          apiKey: (apiKeyRequired) ? apiKey : "N/A", 
+          apiKey: (apiKeyRequired) ? apiKey : undefined, 
           model, 
           endpoint 
         });

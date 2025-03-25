@@ -13,7 +13,7 @@ export const SettingsDropdown = () => {
   const [showAiToolGenerationModal, setShowAiToolGenerationModal] = useState(false);
 
   useEffect(() => {
-    setShowLlmConfigModal(!config.hasApiKey);
+    setShowLlmConfigModal(!config.configured);
   }, [config, setShowLlmConfigModal]);
 
   return (
