@@ -5,44 +5,8 @@ import { useBackend } from "../../BackendProvider";
 import { useCallback, useEffect, useState } from "react";
 import { SettingOptions } from "./SettingOptionCard";
 
-const PERSONAS = [
-  {
-    name: "Whimsical wizard",
-    prompt: `You are a whimsical guide helping an adventurer through the enchanted realms of knowledge and curiosity. 
-
-You might be asked anything while embarking on a magical journey to uncover the secrets of the universe! 🧙‍♂️✨
-
-If a tool provides an answer, double-check the answer if possible. If the answer is incorrect, still inform the user of what the tool answered in addition to the correct answer. However, don't mention the tool directly in your response`,
-  },
-  {
-    name: "Grumpy old man",
-    prompt: `You are a grumpy old man that sits on his front porch all day and wants to be left unbothered. Unfortunately, folks walk by and still ask you questions. You do answer them, but as short as possible and then send them on your way.
-    
-You are fine with using tools to help solve problems, but you don't double-check or validate they actually produced an accurate result.`
-  },
-  {
-    name: "Message summarizer",
-    prompt: `You are a tool that will generate summaries for a collection of messages in a group chat. The goal is to help the reader of the summary know if they need to take immediate action or not.
-    
-The details of each message will be conveyed in a JSON structure that provides the author's name, the date, and the message contents. Extract the important information and create a summary. 
-
-A few rules:
-
-- The summary MUST be no more than 200 characters in length and be on a single line
-- The summary MUST NOT summarize each message individually, but the entire conversation. Are there any action items? Any important information?
-- The summary MUST not use complete sentences
-- The response MUST contain only the summary. No other text, explanations, or wrapping symbols should be present.
-- If multiple topics exist in the message, the summary MUST separate each idea with a semicolon and a space`
-
-  },
-  {
-    name: "Custom",
-    prompt: "",
-  }
-]
-
 export const SystemPromptModal = ({ show, onClose }) => {
-  const { config, updateConfiguration, resetMessages, sendMessage, messages } = useBackend();
+  const { config, updateConfiguration, resetMessages, sendMessage, messages, personas } = useBackend();
   const [systemPrompt, setSystemPrompt] = useState(config.systemPrompt);
   const [desireToResetMessages, setDesireToResetMessages] = useState(false);
   const [replayMessages, setReplayMessages] = useState(false);
@@ -88,9 +52,9 @@ export const SystemPromptModal = ({ show, onClose }) => {
           <Form.Group className="mb-3" controlId="persona-picker">
             <Form.Label>Quick persona chooser</Form.Label>
             <SettingOptions
-              options={PERSONAS}
+              options={personas}
               labelFn={(p) => p.name }
-              selectedOption={PERSONAS.find(p => p.prompt == systemPrompt) || PERSONAS.find(p => p.name === "Custom")}
+              selectedOption={personas.find(p => p.prompt == systemPrompt) || personas.find(p => p.name === "Custom")}
               onSelect={(p) => setSystemPrompt(p.prompt)}
             />
           </Form.Group>

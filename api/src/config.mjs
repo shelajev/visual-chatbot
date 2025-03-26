@@ -11,7 +11,8 @@ export class Configuration {
     this.model = model;
     this.endpoint = endpoint;
 
-    this.systemPrompt = fs.readFileSync("./src/initialPrompt.txt", "utf-8");
+    this.systemPrompt = fs.readFileSync("./src/personas/1-whimsical.txt", "utf-8")
+      .split("\n").filter((l, i) => i > 0).join("\n");
     
     if (process.env.OPENAI_API_KEY) {
       this.apiKey = process.env.OPENAI_API_KEY;

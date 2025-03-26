@@ -1,4 +1,5 @@
 import express from 'express';
+import fs from 'fs';
 import http from 'http';
 import { Server as SocketIo } from 'socket.io';
 import dotenv from 'dotenv';
@@ -10,6 +11,7 @@ import { LlmClient } from './llmClient.mjs';
 import { McpServer } from './mcpServer.mjs';
 import { McpServerStore } from './mcpServerStore.mjs';
 import { BackendOptions } from './backendOptions.mjs';
+import path from 'path';
 
 const app = express();
 const server = http.createServer(app);
@@ -57,8 +59,35 @@ app.post("/api/config", (req, res) => {
   res.json(config.toJSON());
 });
 
+app.get("/api/personas", async (req, res) => {
+  try {
+    const promptFiles = fs.readdirSync('./src/personas');
+
+    const personas = promptFiles.map(file => 
+      fs.readFileSync(path.join('./src/personas', file), 'utf-8')
+    ).map(content => content.split("\n"))
+    .map(([name, ...body]) => ({ name, prompt: body.join("\n") }));
+
+    res.json(personas);
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
+  }
+});
+
 app.post("/api/messages", async (req, res) => {
   let message = req.body.message;
+
+  // Simulate RAG by injecting additional context into the message
+  // Adding a time delay to simulate the lookup time
+  if (message.indexOf("Sherlock Holmes") > -1) {
+    (await new Promise(acc => setTimeout(acc, 1500)));
+    message = [
+      "Additional context:",
+      fs.readFileSync("./src/sherlock-summary.txt", "utf-8"),
+      "***************************",
+      `User prompt: ${message}`
+    ].join("\n");
+  }
 
   await llmClient.sendMessage(message);
   res.json({ status: 'ok' });

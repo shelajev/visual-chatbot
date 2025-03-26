@@ -2,14 +2,41 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
 import { useBackend } from "../../BackendProvider";
 import { McpServerDisplay } from "./McpServerDisplay";
 import { AddMcpServerDialog } from "./AddMcpServerDialog";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export const McpCollectionDisplay = () => {
-  const { mcpServers } = useBackend();
+  const { mcpServers, addMcpServer } = useBackend();
+  const [addingWeatherServer, setAddingWeatherServer] = useState(false);
+  const [addingSqliteServer, setAddingSqliteServer] = useState(false);
   const [showAddMcpServerDialog, setShowAddMcpServerDialog] = useState(false);
+
+  const addWeatherServer = useCallback(() => {
+    const mcpServer = {
+      name: "weather",
+      command: "node",
+      args: ["../sample-mcp-server/src/index.js"],
+    };
+
+    setAddingWeatherServer(true)
+    addMcpServer(mcpServer)
+      .finally(() => setAddingWeatherServer(false));
+  }, [addMcpServer]);
+
+  const addSqliteDemoServer = useCallback(() => {
+    const mcpServer = {
+      name: "database",
+      command: "docker",
+      args: ["run", "--rm", "-i", "mikesir87/mcp-sqlite-demo"],
+    };
+
+    setAddingSqliteServer(true);
+    addMcpServer(mcpServer)
+      .finally(() => setAddingSqliteServer(false));
+  }, [addMcpServer]);
 
   return (
     <>
@@ -43,7 +70,39 @@ export const McpCollectionDisplay = () => {
 
         <Row>
           <Col>
-            <Button variant="secondary" onClick={() => setShowAddMcpServerDialog(true)}>+ Add MCP Server</Button>
+            { !mcpServers.some(mcp => mcp.name === "weather") && (
+              <div className="mb-3">
+                <Button variant="secondary" onClick={addWeatherServer} disabled={addingWeatherServer}>
+                  { addingWeatherServer ? (
+                    <Spinner animation="border" size="sm" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  ) : (
+                    "+ Add weather server (local)"
+                  )}
+                </Button>  
+              </div>
+            )}
+            { !mcpServers.some(mcp => mcp.name === "database") && (
+              <div className="mb-3">
+                <Button variant="secondary" onClick={addSqliteDemoServer} disabled={addingSqliteServer}>
+                  { addingSqliteServer ? (
+                    <Spinner animation="border" size="sm" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  ) : (
+                    "+ Add sqlite server (Docker)"
+                  )}
+                </Button>  
+              </div>
+            )}
+
+            <div>
+              <Button 
+                variant="secondary" 
+                onClick={() => setShowAddMcpServerDialog(true)}
+              >+ Add MCP Server</Button>
+            </div>
           </Col>
         </Row>
       </Container>

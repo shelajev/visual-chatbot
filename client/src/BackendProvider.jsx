@@ -21,6 +21,7 @@ export const BackendContextProvider = ({ children }) => {
   const [mcpServers, setMcpServers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tools, setTools] = useState([]);
+  const [personas, setPersonas] = useState([]);
 
   const getBackendOptions = useCallback(() => {
     return makeRequest("/api/config");
@@ -43,6 +44,11 @@ export const BackendContextProvider = ({ children }) => {
   const isAiToolGenerationEnabled = useMemo(() => {
     return tools.some((tool) => tool.name === "tool-creator")
   }, [tools]);
+
+  useEffect(() => {
+    makeRequest("/api/personas")
+      .then(setPersonas);
+  }, [setPersonas]);
 
   useEffect(() => {
     const socket = io();
@@ -200,6 +206,8 @@ export const BackendContextProvider = ({ children }) => {
       mcpServers,
       addMcpServer,
       removeMcpServer,
+
+      personas,
       
       isAiToolGenerationEnabled,
       toggleAiToolGeneration,
