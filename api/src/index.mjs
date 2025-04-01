@@ -79,11 +79,11 @@ app.post("/api/messages", async (req, res) => {
 
   // Simulate RAG by injecting additional context into the message
   // Adding a time delay to simulate the lookup time
-  if (message.indexOf("Sherlock Holmes") > -1) {
+  if (message.indexOf("Sherlock Holmes") > -1 && message.indexOf("Additional context") === -1) {
     (await new Promise(acc => setTimeout(acc, 1500)));
     message = [
       "Additional context:",
-      fs.readFileSync("./src/sherlock-summary.txt", "utf-8"),
+      fs.readFileSync("./src/resources/sherlock-summary.txt", "utf-8"),
       "***************************",
       `User prompt: ${message}`
     ].join("\n");
