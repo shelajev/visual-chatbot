@@ -12,6 +12,7 @@ export const McpCollectionDisplay = () => {
   const { mcpServers, addMcpServer } = useBackend();
   const [addingWeatherServer, setAddingWeatherServer] = useState(false);
   const [addingSqliteServer, setAddingSqliteServer] = useState(false);
+  const [addingDockerDesktopMcpGateway, setAddingDockerDesktopMcpGateway] = useState(false);
   const [showAddMcpServerDialog, setShowAddMcpServerDialog] = useState(false);
 
   const addWeatherServer = useCallback(() => {
@@ -36,6 +37,18 @@ export const McpCollectionDisplay = () => {
     setAddingSqliteServer(true);
     addMcpServer(mcpServer)
       .finally(() => setAddingSqliteServer(false));
+  }, [addMcpServer]);
+
+  const addDockerDesktopMcpGateway = useCallback(() => {
+    const mcpServer = {
+      name: "dd-gateway",
+      command: "docker",
+      args: ["run", "--rm", "-i", "alpine/socat", "STDIO", "TCP:host.docker.internal:8811"],
+    };
+
+    setAddingDockerDesktopMcpGateway(true);
+    addMcpServer(mcpServer)
+      .finally(() => setAddingDockerDesktopMcpGateway(false));
   }, [addMcpServer]);
 
   return (
@@ -92,6 +105,20 @@ export const McpCollectionDisplay = () => {
                     </Spinner>
                   ) : (
                     "+ Add sqlite server (Docker)"
+                  )}
+                </Button>  
+              </div>
+            )}
+
+            { !mcpServers.some(mcp => mcp.name === "dd-gateway") && (
+              <div className="mb-3">
+                <Button variant="secondary" onClick={addDockerDesktopMcpGateway} disabled={addingDockerDesktopMcpGateway}>
+                  { addingDockerDesktopMcpGateway ? (
+                    <Spinner animation="border" size="sm" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  ) : (
+                    "+ Add Docker MCP Gateway"
                   )}
                 </Button>  
               </div>
