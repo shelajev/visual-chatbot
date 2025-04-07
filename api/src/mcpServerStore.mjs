@@ -20,6 +20,13 @@ export class McpServerStore {
   addMcpServer(mcpServer) {
     this.mcpServers.push(mcpServer);
 
+    const self = this;
+    mcpServer.onNewToolListing = (tools, oldTools) => {
+      oldTools.forEach(tool => self.toolStore.removeToolByName(tool.name));
+      tools.forEach(tool => self.toolStore.addTool(tool));
+      self.eventEmitter.emit('mcpServerUpdated', mcpServer);
+    };
+
     mcpServer.getTools().forEach(tool => {
       this.toolStore.addTool(tool);
     });
@@ -58,6 +65,10 @@ export class McpServerStore {
 
   onMcpServerAdded(callback) {
     this.eventEmitter.on('mcpServerAdded', callback);
+  }
+
+  onMcpServerUpdated(callback) {
+    this.eventEmitter.on('mcpServerUpdated', callback);
   }
 
   onMcpServerRemoved(callback) {

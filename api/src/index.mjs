@@ -114,6 +114,7 @@ app.post("/api/mcp-servers", async (req, res) => {
     mcpServerStore.addMcpServer(server);
     res.json({ status: 'ok' });
   } catch (e) {
+    console.error(e);
     res.status(500).json({ status: 'error', message: "Unable to start MCP server. Validate the startup command. " + e.message });
     return;
   }
@@ -235,6 +236,7 @@ function setupEventListeners() {
   toolStore.onToolAdded(tool => io.emit('toolAdded', tool.toJSON()));
   toolStore.onRemovedTool(tool => io.emit('toolRemoved', tool.toJSON()));
   mcpServerStore.onMcpServerAdded(server => io.emit('mcpServerAdded', server.toJSON()));
+  mcpServerStore.onMcpServerUpdated(server => io.emit('mcpServerUpdated', server.toJSON()));
   mcpServerStore.onMcpServerRemoved(server => io.emit('mcpServerRemoved', server.toJSON()));
   
   io.on('connection', (client) => {

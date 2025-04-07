@@ -1,4 +1,5 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { ToolListChangedNotificationSchema } from "@modelcontextprotocol/sdk/types.js"
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { Tool } from "./tool.mjs";
 
@@ -7,6 +8,7 @@ export class McpServer {
     this.name = name;
     this.command = command;
     this.args = args;
+    this.onNewToolListing = (tools) => {};
 
     this.client = new Client({
       name: "visual-chatbot",
@@ -30,9 +32,20 @@ export class McpServer {
       throw e;
     }
 
+    this.client.setNotificationHandler(ToolListChangedNotificationSchema, function() {
+      console.log(`Received a notification for a new tool listing for MCP server ${this.name}`);
+      this.updateToolListing();
+    }.bind(this));
+
+    await this.updateToolListing();
+  }
+
+  async updateToolListing() {
     const { tools: availableTools } = await this.client.listTools();
 
     const self = this;
+
+    const oldTools = this.tools;
 
     this.tools = availableTools.map(availableTool => new Tool(
       `${this.name}__${availableTool.name}`,
@@ -51,6 +64,8 @@ export class McpServer {
         }
       }
     ));
+
+    this.onNewToolListing(this.tools, oldTools);
   }
 
   getTools() {

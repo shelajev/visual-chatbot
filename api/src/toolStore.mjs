@@ -44,6 +44,12 @@ export class ToolStore {
 
   removeToolByName(toolName) {
     const tool = this.tools.find(t => t.name === toolName);
+
+    if (!tool) {
+      console.error(`Trying to remove tool ${toolName}, but it was not found`);
+      return;
+    }
+
     this.tools = this.tools.filter(t => t.name !== toolName);
     this.eventEmitter.emit("toolRemoved", tool);
   }

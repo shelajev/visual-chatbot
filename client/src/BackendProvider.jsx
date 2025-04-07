@@ -100,6 +100,14 @@ export const BackendContextProvider = ({ children }) => {
       setMcpServers((prevMcpServers) => [...prevMcpServers, mcpServer]);
     });
 
+    socket.on("mcpServerUpdated", (mcpServer) => {
+      console.log("mcpServerUpdated", mcpServer);
+      setMcpServers((prevMcpServers) => [
+        ...prevMcpServers.filter((m) => m.name !== mcpServer.name),
+        mcpServer,
+      ]);
+    })
+
     socket.on("mcpServerRemoved", (mcpServer) => {
       console.log("mcpServerRemoved", mcpServer);
       setMcpServers((prevMcpServers) => prevMcpServers.filter((m) => m.name !== mcpServer.name));
