@@ -128,7 +128,7 @@ export const McpCollectionDisplay = () => {
               <Button 
                 variant="secondary" 
                 onClick={() => setShowAddMcpServerDialog(true)}
-              >+ Add MCP Server</Button>
+              >+ Add custom MCP server</Button>
             </div>
           </Col>
         </Row>
