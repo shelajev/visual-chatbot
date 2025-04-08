@@ -57,7 +57,7 @@ export const ToolCollectionDisplay = () => {
           <Button 
             variant="secondary"
             onClick={() => addTimeTool()}
-            className="me-3"
+            className="me-3 mb-3"
           >
             + Add time tool
           </Button>
