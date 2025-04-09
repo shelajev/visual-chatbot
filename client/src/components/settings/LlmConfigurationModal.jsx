@@ -74,7 +74,7 @@ export const LlmConfigurationModal = ({ show, onClose }) => {
             <Form.Label>Model</Form.Label>
             <SettingOptions
               options={selectedBackend?.models}
-              labelFn={(m) => m.indexOf("/") > -1 ? m.split("/")[1] : m}
+              labelFn={(m) => m}
               selectedOption={model}
               onSelect={(m) => setModel(m)}
             />
