@@ -37,7 +37,9 @@ export class BackendOptions {
     try {
       const { models } = await fetch(ollamaAddress + "/api/tags").then(r => r.json());
       ollamaModels = models.map(m => m.name);
-    } catch (e) {}
+    } catch (e) {
+      return null;
+    }
 
     return {
       name: "Ollama (on host)",
