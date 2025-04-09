@@ -7,8 +7,10 @@ import { ChatThreadDisplay } from './components/chat/ChatThreadDisplay';
 import { Sidebar } from './components/Sidebar';
 import { SettingsDropdown } from './components/settings/SettingsDropdown';
 import { useTutorial } from './components/tutorial/TutorialContextProvider';
+import { useBackend } from './BackendProvider';
 
 function App() {
+  const { config } = useBackend();
   const { openTutorialModal } = useTutorial();
 
   return (
@@ -17,6 +19,7 @@ function App() {
         <Navbar bg="dark" data-bs-theme="dark">
           <Container>
             <Navbar.Brand href="#home">Visual Chatbot</Navbar.Brand>
+            <Navbar.Text>Using model: { config?.model || "none" }</Navbar.Text>
             <Navbar.Collapse className="justify-content-end">
               <Nav>
                 <Nav.Link onClick={openTutorialModal}>Tutorial</Nav.Link>
