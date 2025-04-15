@@ -9,11 +9,21 @@ import { useTutorial } from "./TutorialContextProvider";
 import mermaid from "remark-mermaidjs";
 import callouts from "remark-callouts";
 import "remark-callouts/styles.css";
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { Code } from "./markdown/Code";
+import { CopyButton } from "./markdown/CopyButton";
+import { useMemo } from "react";
+import { useBackend } from "../../BackendProvider";
 
 export const TutorialModal = ({ }) => {
-  const { shouldShowModal, closeTutorialModal, steps, currentStep, nextStep, previousStep } = useTutorial();
+  const { config } = useBackend();
+  const { shouldShowModal, closeTutorialModal, steps, currentStep, nextStep, previousStep, setActiveStep } = useTutorial();
+
+  const stepContent = useMemo(() => {
+    return steps[currentStep - 1].content
+      .replaceAll("{{MODEL}}", config.model)
+      .replaceAll("{{ENDPOINT}}", config.endpoint)
+      .replaceAll("docker-socket/exp/vDD4.40", "localhost:12434");
+  }, [config, steps, currentStep]);
 
   return (
     <Modal size="xl" show={shouldShowModal} onHide={closeTutorialModal}>
@@ -26,7 +36,7 @@ export const TutorialModal = ({ }) => {
             <Col sm={3}>
               <ListGroup activeKey={currentStep} as="ol" numbered className="flex-column">
                 {steps.map((step, index) => (
-                  <ListGroup.Item key={index} as="li" action eventKey={index + 1}>
+                  <ListGroup.Item key={index} as="li" action eventKey={index + 1} onClick={() => setActiveStep(index + 1)}>
                     {step.name}
                   </ListGroup.Item>
                 ))}
@@ -37,22 +47,11 @@ export const TutorialModal = ({ }) => {
                 <ReactMarkdown 
                   remarkPlugins={[mermaid, callouts]}
                   components={{
-                    code({ node, inline, className, children, ...props }) {
-                      const match = /language-(\w+)/.exec(className || '');
-            
-                      return !inline && match ? (
-                        <SyntaxHighlighter style={ghcolors} PreTag="div" language={match[1]} {...props}>
-                          {String(children).replace(/\n$/, '')}
-                        </SyntaxHighlighter>
-                      ) : (
-                        <code className={className} {...props}>
-                          {children}
-                        </code>
-                      );
-                    },
+                    code: Code,
+                    copy: CopyButton,
                   }}
                 >
-                  {steps[currentStep - 1].content}
+                  {stepContent}
                 </ReactMarkdown>
               </div>
             </Col>

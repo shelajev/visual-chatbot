@@ -37,6 +37,10 @@ export const TutorialContextProvider = ({ children }) => {
   const previousStep = useCallback(
     () => setCurrentStep(c => Math.max(c - 1, 1)), 
     [setCurrentStep]);
+
+  const setActiveStep = useCallback(
+    (c) => setCurrentStep(c),
+    [setCurrentStep]);
     
   useEffect(() => {
     if (hasShowedTutorial) return;
@@ -56,6 +60,7 @@ export const TutorialContextProvider = ({ children }) => {
       currentStep,
       nextStep,
       previousStep,
+      setActiveStep,
     }}>
       <>
         {children}

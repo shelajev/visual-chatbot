@@ -20,19 +20,22 @@ The `/v1/chats/completion` endpoint ([full docs here](https://platform.openai.co
 
 Here's a quick example:
 
-```json
+```json with-copy highlight=6-9
+curl -v {{ENDPOINT}} \
+    -H "Content-type: application/json" \
+    -X POST --data-raw '
 {
-    "messages": [
-        { "role": "system", "content": "You are a helpful assistant. Blah blah..." },
-        { "role": "user", "content": "Hello!" }
-    ],
-    "model": "gpt-4o"
-}
+  "model": "{{MODEL}}",
+  "messages": [
+    { "role": "system", "content": "You are a helpful assistant. Blah blah..." },
+    { "role": "user", "content": "Hello!" }
+  ]
+}'
 ```
 
 This goes to the LLM and generates a response. The response will contain quite a few things, but the `choices` element is the most important:
 
-```json
+```json highlight=9-12
 {
   "id": "chatcmpl-123",
   "object": "chat.completion",

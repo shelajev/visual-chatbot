@@ -6,16 +6,21 @@ Therefore, in order to give it memory of the conversation, you simply keep track
 
 It is quite often the case that you will see the `messages` look something like this...
 
-```json
-[
-  { "role": "system", "content": "Instructions for the agent" },
-  { "role": "user", "content": "First message" },
-  { "role": "assistant", "content": "First response" },
-  { "role": "user", "content": "Second message" },
-  { "role": "assistant", "content": "Second response" },
-  { "role": "user", "content": "Third message" },
-  { "role": "assistant", "content": "Third response" }
-]
+```json with-copy
+curl -v {{ENDPOINT}} \
+    -H "Content-type: application/json" \
+    -X POST --data-raw '
+{
+  "model": "{{MODEL}}",
+  "messages": [
+    { "role": "system", "content": "You are a helpful agent" },
+    { "role": "user", "content": "What can you do for me?" },
+    { "role": "assistant", "content": "There are many things I can do. What do you need help with?" },
+    { "role": "user", "content": "Dogs are my favorite pet" },
+    { "role": "assistant", "content": "That is great to hear! Dogs make great pets!" },
+    { "role": "user", "content": "Do you have any suggestions for names?" }
+  ]
+}'
 ```
 
 Now, as you can imagine, this could create a very large payload. And since LLMs often charge by "token" (more payload = more token usage), some patterns encourage the usage of trimming or summarizing messages.
