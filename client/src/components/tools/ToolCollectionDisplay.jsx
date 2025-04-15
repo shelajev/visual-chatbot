@@ -64,8 +64,9 @@ export const ToolCollectionDisplay = () => {
         )}
 
         <Button 
-          variant="secondary"
+          variant="outline-secondary"
           onClick={() => setShowAddToolModal(true)}
+          className="mb-3"
         >
           + Add custom tool
         </Button>
