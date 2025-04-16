@@ -8,7 +8,6 @@ import { SettingOptions } from "./SettingOptionCard";
 export const SystemPromptModal = ({ show, onClose }) => {
   const { config, updateConfiguration, resetMessages, sendMessage, messages, personas } = useBackend();
   const [systemPrompt, setSystemPrompt] = useState(config.systemPrompt);
-  const [desireToResetMessages, setDesireToResetMessages] = useState(false);
   const [replayMessages, setReplayMessages] = useState(false);
   const [savedMessages, setSavedMessages] = useState(messages);
   const [hasSaved, setHasSaved] = useState(false);
@@ -28,8 +27,7 @@ export const SystemPromptModal = ({ show, onClose }) => {
     await updateConfiguration({ systemPrompt, });
     setHasSaved(true);
     
-    if (desireToResetMessages || replayMessages)
-      await resetMessages();
+    await resetMessages();
     
     onClose();
     if (replayMessages) {
@@ -69,15 +67,6 @@ export const SystemPromptModal = ({ show, onClose }) => {
               onChange={e => setSystemPrompt(e.target.value)} 
             />
           </Form.Group>
-
-          <Form.Check
-            type="switch"
-            id="clear-messages"
-            label="Reset messages on save"
-            checked={replayMessages ? true : desireToResetMessages}
-            disabled={replayMessages}
-            onChange={(e) => setDesireToResetMessages(e.target.checked)}
-          />
 
           <Form.Check
             type="switch"
