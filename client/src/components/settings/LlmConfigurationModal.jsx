@@ -41,7 +41,7 @@ export const LlmConfigurationModal = ({ show, onClose }) => {
   if (!backendOptions) return;
 
   return (
-    <Modal size="xl" show={show} backdrop={config.hasApiKey ? true : "static"} keyboard={config.hasApiKey} onHide={handleClose}>
+    <Modal size="xl" show={show} backdrop={config.endpoint ? true : "static"} keyboard={config.hasApiKey} onHide={handleClose}>
       <Modal.Header>
         <Modal.Title>LLM connection configuration</Modal.Title>
       </Modal.Header>
@@ -96,7 +96,7 @@ export const LlmConfigurationModal = ({ show, onClose }) => {
         </Modal.Body>
 
         <Modal.Footer>
-          { config.hasApiKey && <Button variant="secondary" onClick={handleClose}>Cancel</Button> }
+          { config.endpoint && <Button variant="secondary" onClick={handleClose}>Cancel</Button> }
           <Button type="submit" variant="primary">Save</Button>
         </Modal.Footer>
       </Form>
