@@ -25,7 +25,7 @@ export const MessageInput = () => {
           maxRows={3}
           minRows={1}
           value={input} 
-          placeholder="Type a message..."
+          placeholder="Type your user message content..."
           onChange={(e) => setInput(e.target.value)} 
           onKeyDown={(e) => {
             if (!e.shiftKey && e.key === 'Enter') {
@@ -41,7 +41,7 @@ export const MessageInput = () => {
             </Spinner>
           ) : "Add message" }
         </Button>
-        <Button type="button" variant="danger" onClick={resetMessages}>Reset conversation</Button>
+        <Button type="button" variant="danger" onClick={resetMessages}>Reset messages</Button>
       </InputGroup>
     </Form>
   )

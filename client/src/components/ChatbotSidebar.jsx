@@ -3,7 +3,7 @@ import Tab from 'react-bootstrap/Tab';
 import { ToolCollectionDisplay } from './tools/ToolCollectionDisplay';
 import { McpCollectionDisplay } from './mcp/McpCollectionDisplay';
 
-export const Sidebar = () => {
+export const ChatbotSidebar = () => {
   return (
     <Tabs
       defaultActiveKey="tools"

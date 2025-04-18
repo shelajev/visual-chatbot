@@ -7,10 +7,12 @@ const TutorialContext = createContext(null);
 const steps = [
   { name: "Intro", content: (await import("./steps/introStep.md?raw")).default },
   { name: "Message basics", content: (await import("./steps/messageBasics.md?raw")).default },
-  { name: "History and threads", content: (await import("./steps/history.md?raw")).default },
+  { name: "Going beyond chatbots", content: (await import("./steps/beyond-chatbots.md?raw")).default },
+  { name: "Maintaining history", content: (await import("./steps/history.md?raw")).default },
   { name: "RAG (Retrieval Augmented Generation)", content: (await import("./steps/rag.md?raw")).default },
   { name: "Tools", content: (await import("./steps/tools.md?raw")).default },
   { name: "Externalizing tools with MCP", content: (await import("./steps/mcp.md?raw")).default },
+  { name: "MCP gateways", content: (await import("./steps/mcp-gateway.md?raw")).default },
 ];
 
 export const TutorialContextProvider = ({ children }) => {

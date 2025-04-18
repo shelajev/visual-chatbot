@@ -1,10 +1,12 @@
 import Container from "react-bootstrap/Container";
 import { useBackend } from "../../BackendProvider";
-import { MessageDisplay } from "./MessageDisplay";
+import { ChatMessageDisplay } from "./ChatMessageDisplay";
 import { useCallback, useState } from "react";
 import { MessageDetailsDialog } from "./MessageDetailsDialog";
 
-export const ChatThreadDisplay = () => {
+export const ChatThreadDisplay = ({
+  MessageComponent = ChatMessageDisplay,
+}) => {
   const { messages, deleteMessage } = useBackend();
   const [selectedMessageIndex, setSelectedMessageIndex] = useState(null);
 
@@ -20,7 +22,7 @@ export const ChatThreadDisplay = () => {
     <>
       <Container fluid>
         {messages.map((message, index) => (
-          <MessageDisplay 
+          <MessageComponent 
             key={index} 
             message={message} 
             onSelect={() => handleSelectMessage(index)}

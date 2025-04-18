@@ -5,35 +5,83 @@ This may be a "hot take", but here goes:
 > [!warning] Hot take!
 > Creating LLM-based applications isn't _that_ different than any other application.
 
-Why? Well, you're simply interacting with an API. Requests go in. Some LLM magic happens. And responses come back out. The only difference is the responses are _very_ likely to be different every time, even with the same inputs.
+Why? Well, you're simply interacting with an API. Requests go in, some LLM magic happens, and responses come back out. The only difference is the responses are _very_ likely to be different every time, even with the exact same inputs.
 
-For this training, we're going to focus on chat-based interactions, so let's look at its API.
+## The LLM API
 
-## The chat API endpoint
+One of the things OpenAI did is they created an API specification around their LLMs, which many of the other LLM providers are now following this schema (including the Docker Model Runner).
 
-One of the things OpenAI did is they created an API specification around their LLM. Many of the other LLM providers are now following this schema. 
+This abstraction layer API makes it easy to interact with models without having to worry about loading/unloading models, formatting data, etc.
 
-The `/v1/chats/completion` endpoint ([full docs here](https://platform.openai.com/docs/api-reference/chat/create)) requires two fields: `messages` and `model`:
+For a web-based chat application, that flow looks something like this:
+
+```mermaid
+flowchart LR
+    User -->|Submits prompt|Chat[Chat app]
+    Chat -->|Sends request| LLMAPI[LLM API]
+    LLMAPI --> LLM
+    LLMAPI --> |Sends response| Chat
+    Chat -->|Updates chat| User
+```
+
+For local GenAI-enabled apps (like VS Code, Claude Desktop, Docker Desktop, etc.), there is usually an extra step in which there is a local client that works with a backend API.
+
+```mermaid
+flowchart LR
+    User    --> |Submits prompt| App[Local app]
+    App     --> |Sends to backend| Backend
+    Backend --> |Sends request| API[LLM API]
+    API     -->                    LLM
+    API     --> |Sends response| Backend
+    Backend  --> |Updates chat| App
+    style App stroke-width:6px
+```
+
+Now that we understand that, let's dive in and understand what's actually being sent in the messages sent to the LLM API.
+
+We'll start off with the "Chat Completions" endpoint
+
+
+## The chat completions endpoint
+
+The `/v1/chats/completion` endpoint ([full docs here](https://platform.openai.com/docs/api-reference/chat/create)) allows you to "create a model response for a given chat conversation."
+
+The endpoint requires two fields:
 
 - `model`: your intended model
-- `messages`: a collection of the messages for the conversation up to this point (more on that shortly)
+- `messages`: a collection of the messages for the conversation up to this point
 
-Here's a quick example:
+Each `message` contains, at a minimum, two properties:
 
-```json with-copy highlight=6-9
+- `role`: the role of the message (more on that in a moment)
+- `content`: the content of the message
+
+The example below (which you can try yourself!) sends a request to the LLM, specifying your current model ({{MODEL}}) and two messages. We'll talk about the different messages in just a moment.
+
+```json with-copy highlight=5-15
 curl -v {{ENDPOINT}} \
     -H "Content-type: application/json" \
     -X POST --data-raw '
 {
   "model": "{{MODEL}}",
   "messages": [
-    { "role": "system", "content": "You are a helpful assistant. Blah blah..." },
-    { "role": "user", "content": "Hello!" }
+    { 
+      "role": "system", 
+      "content": "You are a helpful assistant. Blah blah..." 
+    },
+    { 
+      "role": "user", 
+      "content": "Hello!"
+    }
   ]
 }'
 ```
 
-This goes to the LLM and generates a response. The response will contain quite a few things, but the `choices` element is the most important:
+After sending this request, we'll get a response that will contain quite a few things including tokens used and some other metadata.
+
+The main response we're after is embedded in the `choices` property. You may notice this field looks like a message we say earlier because it is!
+
+But, you'll notice that the `role` of the message has a value of **assistant** (more on that in a moment):
 
 ```json highlight=9-12
 {
@@ -65,19 +113,23 @@ This goes to the LLM and generates a response. The response will contain quite a
 }
 ```
 
-You'll notice in the response's `choices` array, there is another message! But, this one has a different `role` associated with it.
-
 ### Message roles
 
-Think of the "role" of a message similar to the type of the message. A few of the roles are outlined below:
+Now that we've seen a few different "roles" of messages, let's dive into what the roles mean. The "role" of a message specifies the type of the message and how it should be handled by the LLM. The roles we've seen so far include:
 
-- **system** - information on how the system should operate. What are the rules of engagement? How should the LLM structure responses? What are things it must or must never do?
+- **system** (sometimes called **developer**) - information on how the LLM should operate. What is its persona? What are the rules of engagement? How should the LLM structure responses? What are things it must or must never do?
 - **user** - messages sent by the user. These are typically the messages typed in the chat interaction or through other mechanisms.
 - **assistant** - messages generated by the AI assistant (like we see in the response)
+
+We'll talk about a fourth type called **tool** in a little bit. But, now it's your turn to try things out a little bit!
 
 
 ## Your task
 
-Close this tutorial and interact with the LLM by submitting messages. You can click on any message to view more details about the message, including its role and content.
+For this step of the tutorial, your goal is to get familiar with messages.
 
-As a bonus, change the System Prompt (by going into **Settings** -> **System prompt**) to a different character and see how the responses vary.
+In the message view, you'll see a default system message that has already been specified. When you add a message, the stack of messages will be sent to the API.
+
+1. Add a few `user` messages and get results from the API.
+2. Click on any message to view the raw message details, including its role and content.
+3. Adjust the System Prompt and see how the flow of the conversation changes. You can do so by going to **Settings** -> **System prompt**.

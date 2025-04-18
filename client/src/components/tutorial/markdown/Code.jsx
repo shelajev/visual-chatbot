@@ -1,6 +1,5 @@
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { CopyButton } from './CopyButton';
+import { SyntaxHighlighterDisplay } from './SyntaxHighlighterDisplay';
 
 function expandRange(rangeString) {
   const [start, end] = rangeString.split('-').map(Number);
@@ -11,7 +10,6 @@ function expandRange(rangeString) {
 }
 
 function getHighlightRows(meta) {
-  console.log("META", meta);
   const highlightRows = meta.find(m => m.startsWith("highlight="));
   if (!highlightRows) return [];
 
@@ -28,26 +26,12 @@ export function Code({ node, inline, className, children, ...props }) {
   const metadata = node.data?.meta.split(" ") || [];
   const highlightRows = getHighlightRows(metadata);
 
-  console.log("Highlight rows", highlightRows);
-
   const codeDisplay = (!inline && match) ? (
-    <SyntaxHighlighter 
-      style={ghcolors} 
-      PreTag="div" 
-      language={match[1]} 
-      wrapLines={true}
-      showLineNumbers={true}
-      lineProps={(lineNumber) => {
-        const style = { display: "block", width: "fit-content" };
-        if (highlightRows.includes(lineNumber)) {
-          style.backgroundColor = "#FFE6A8";
-        }
-        return { style };
-      }}
-      {...props}
-    >
-      {String(children).replace(/\n$/, '')}
-    </SyntaxHighlighter>
+    <SyntaxHighlighterDisplay
+      language={match[1]}
+      highlightRows={highlightRows}
+      code={children}
+    />
   ) : (
     <code className={className} {...props}>
       {children}
