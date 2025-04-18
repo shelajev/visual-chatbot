@@ -8,6 +8,7 @@ on:
 env:
   DOCKERHUB_USERNAME: mikesir87
   DBC_BUILDER: mikesir87/personal-builder
+  IMAGE_NAME: mikesir87/visual-chatbot
 
 jobs:
   build:
@@ -43,7 +44,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.DOCKERHUB_USERNAME }}/visual-chatbot
+          images: ${{ env.IMAGE_NAME }}
           tags: |
             type=ref,enable=true,event=branch
             type=raw,value=latest,enable={{is_default_branch}}
@@ -54,7 +55,8 @@ jobs:
           driver: cloud
           endpoint: ${{ env.DBC_BUILDER}}
 
-      - name: Build and push Docker image
+      - id: build
+        name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -65,3 +67,11 @@ jobs:
           load: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign images
+        run: |
+          cosign sign --yes --recursive ${{ env.IMAGE_NAME }}@${{ steps.build.outputs.imageid }}
+      
