@@ -19,7 +19,8 @@ export function TutorialDisplay() {
     return steps[currentStep - 1].content
       .replaceAll("{{MODEL}}", config.model)
       .replaceAll("{{ENDPOINT}}", config.endpoint)
-      .replaceAll("docker-socket/exp/vDD4.40", "localhost:12434");
+      .replaceAll("docker-socket/exp/vDD4.40", "localhost:12434")
+      .replaceAll("model-runner.docker.internal", "localhost:12434");
   }, [config, steps, currentStep]);
 
   return (
