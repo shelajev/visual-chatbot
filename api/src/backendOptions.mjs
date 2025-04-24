@@ -55,7 +55,7 @@ export class BackendOptions {
       const response = await fetch("http://model-runner.docker.internal/engines/v1/models").then(r => r.json());
       return {
         name: "Docker Model Runner (internal)",
-        endpoint: "http://model-runner.docker.internal/engines/llama.cpp/v1/chat/completions",
+        endpoint: "http://model-runner.docker.internal/engines/v1/chat/completions",
         models: response.data.map(data => data.id),
         requiresApiKey: false,
       };
@@ -72,7 +72,7 @@ export class BackendOptions {
       
       return {
         name: "Docker Model Runner (socket)",
-        endpoint: "http://docker-socket/exp/vDD4.40/engines/llama.cpp/v1/chat/completions",
+        endpoint: "http://docker-socket/exp/vDD4.40/engines/v1/chat/completions",
         models: response.data.map(d => d.id),
         requiresApiKey: false,
       };
