@@ -5,7 +5,7 @@ import { TutorialActions } from './components/tutorial/TutorialActions';
 import { MessageSidebar } from './components/MessageSidebar';
 import { TutorialStepSelector } from './components/tutorial/TutorialStepSelector';
 
-export function NewApp() {
+export function TutorialApp() {
 
   return (
     <>

@@ -3,21 +3,23 @@ import dns from "dns";
 
 export class BackendOptions {
   static async getConfigurations() {
-    const configurations = [
+    const configurations = [];
+
+    const [ollamaConfiguration, modelRunnerConfiguration] = await Promise.all([
+      BackendOptions.#createOllamaConfiguration(),
+      BackendOptions.#createModelRunnerConfiguration(),
+    ]);
+    if (modelRunnerConfiguration) configurations.push(modelRunnerConfiguration);
+    if (ollamaConfiguration) configurations.push(ollamaConfiguration);
+
+    configurations.push(
       { 
         name: "OpenAI",
         endpoint: "https://api.openai.com/v1/chat/completions",
         models: ["gpt-4o", "o3-mini", "gpt-4o-mini"],
         requiresApiKey: true,
       },
-    ];
-
-    const [ollamaConfiguration, modelRunnerConfiguration] = await Promise.all([
-      BackendOptions.#createOllamaConfiguration(),
-      BackendOptions.#createModelRunnerConfiguration(),
-    ]);
-    if (ollamaConfiguration) configurations.push(ollamaConfiguration);
-    if (modelRunnerConfiguration) configurations.push(modelRunnerConfiguration);
+    );
     
     return configurations;
   }
@@ -42,7 +44,7 @@ export class BackendOptions {
     }
 
     return {
-      name: "Ollama (on host)",
+      name: "Ollama",
       endpoint: ollamaAddress + "/v1/chat/completions",
       models: ollamaModels,
       requiresApiKey: false,
@@ -54,7 +56,7 @@ export class BackendOptions {
       await dns.promises.resolve("model-runner.docker.internal");
       const response = await fetch("http://model-runner.docker.internal/engines/v1/models").then(r => r.json());
       return {
-        name: "Docker Model Runner (internal)",
+        name: "Docker Model Runner",
         endpoint: "http://model-runner.docker.internal/engines/v1/chat/completions",
         models: response.data.map(data => data.id),
         requiresApiKey: false,
@@ -71,7 +73,7 @@ export class BackendOptions {
       }).then(r => r.json());
       
       return {
-        name: "Docker Model Runner (socket)",
+        name: "Docker Model Runner",
         endpoint: "http://docker-socket/exp/vDD4.40/engines/v1/chat/completions",
         models: response.data.map(d => d.id),
         requiresApiKey: false,
