@@ -57,6 +57,17 @@ export class McpServer {
         try {
           const response = await self.client.callTool({ name: availableTool.name, arguments: args });
           console.log("Got response", response);
+
+          if (response.isError) {
+            console.error("Error executing tool", response);
+            return "Error executing tool";
+          }
+
+          if (response.content.length === 0) {
+            console.error("No content in response", response);
+            return "No content in response";
+          }
+
           return response.content[0].text;
         } catch (e) {
           console.error("Error executing tool", e);
