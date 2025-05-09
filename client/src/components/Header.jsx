@@ -2,17 +2,15 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { SettingsDropdown } from './settings/SettingsDropdown';
-import { useTutorial } from './tutorial/TutorialContextProvider';
 import { useBackend } from '../BackendProvider';
 import { useAppMode } from '../AppWrapper';
+import { ToolGraphDisplay } from './tools/ToolGraphDisplay';
 
 export function Header({ 
-  showTutorial = true,
   title = "Visual Chatbot",
 }) {
   const { useTutorialMode, toggleModes } = useAppMode();
   const { config } = useBackend();
-  const { openTutorialModal } = useTutorial();
 
   return (
     <Navbar bg="dark" data-bs-theme="dark">
@@ -24,6 +22,7 @@ export function Header({
             <Nav.Link onClick={toggleModes}>
               { useTutorialMode ? "Leave tutorial mode" : "Start tutorial" }
             </Nav.Link>
+            <ToolGraphDisplay />
             <SettingsDropdown />
           </Nav>
         </Navbar.Collapse>

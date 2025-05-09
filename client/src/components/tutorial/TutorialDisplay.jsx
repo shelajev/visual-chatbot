@@ -3,7 +3,6 @@ import ReactMarkdown from "react-markdown";
 import mermaid from "remark-mermaidjs";
 import callouts from "remark-callouts";
 import { Code } from "./markdown/Code";
-import { CopyButton } from "./markdown/CopyButton";
 import { useMemo } from "react";
 import { useBackend } from "../../BackendProvider";
 import { useTutorial } from "./TutorialContextProvider";
