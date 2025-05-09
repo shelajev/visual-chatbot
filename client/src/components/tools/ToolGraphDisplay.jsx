@@ -43,7 +43,7 @@ export const ToolGraphDisplay = () => {
       </Nav.Link>
       <Modal show={showMermaidDialog} onHide={() => setShowMermaidDialog(false)} size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>Visualize tools</Modal.Title>
+          <Modal.Title>Tool graph</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ReactMarkdown
