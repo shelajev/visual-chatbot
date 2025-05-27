@@ -14,9 +14,18 @@ export class Tool {
     this.parameterSchema = parameterSchema;
     this.type = type;
     this.onExecute = onExecute;
+    this.enabled = true;
+  }
+
+  setEnabled(enabled) {
+    this.enabled = enabled;
   }
 
   async execute(parameters) {
+    if (!this.enabled) {
+      throw new Error(`Tool ${this.name} is disabled`);
+    }
+
     return await this.onExecute(parameters);
   }
 
@@ -26,6 +35,7 @@ export class Tool {
       type: this.type,
       description: this.description,
       parameters: this.parameterSchema,
+      enabled: this.enabled,
     }
   };
 }

@@ -184,15 +184,15 @@ app.post("/api/tools", async (req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.delete("/api/tools", async (req, res) => {
-  if (!req.body.name) {
-    res.status(400).json({ status: 'error', message: 'Missing required fields' });
-    return;
-  }
-
-  toolStore.removeToolByName(req.body.name);
+app.post("/api/tools/:toolName/enable", (req, res) => {
+  toolStore.setToolEnabled(req.params.toolName, req.body.enabled);
   res.json({ status: 'ok' });
-})
+});
+
+app.delete("/api/tools/:toolName", async (req, res) => {
+  toolStore.removeToolByName(req.params.toolName);
+  res.json({ status: 'ok' });
+});
 
 function addLocalTool(name, description, code, parameters) {
   const requestedParameters = Object.keys(parameters?.properties || {});
@@ -234,6 +234,7 @@ function setupEventListeners() {
   messageStore.onMessagesCleared(() => io.emit('messages', []));
   messageStore.onMessagesCleared(() => addSystemPrompt());
   toolStore.onToolAdded(tool => io.emit('toolAdded', tool.toJSON()));
+  toolStore.onToolUpdated(tool => io.emit('toolUpdated', tool.toJSON()));
   toolStore.onRemovedTool(tool => io.emit('toolRemoved', tool.toJSON()));
   mcpServerStore.onMcpServerAdded(server => io.emit('mcpServerAdded', server.toJSON()));
   mcpServerStore.onMcpServerUpdated(server => io.emit('mcpServerUpdated', server.toJSON()));

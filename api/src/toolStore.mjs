@@ -15,6 +15,17 @@ export class ToolStore {
     this.eventEmitter.emit("toolAdded", tool);
   }
 
+  setToolEnabled(toolName, enabled) {
+    const tool = this.tools.find(t => t.name === toolName);
+    
+    if (!tool) {
+      return;
+    }
+
+    tool.setEnabled(enabled);
+    this.eventEmitter.emit('toolUpdated', tool);
+  }
+
   getTools() {
     return this.tools;
   }
@@ -23,19 +34,25 @@ export class ToolStore {
     return this.eventEmitter.on('toolAdded', cb);
   }
 
+  onToolUpdated(cb) {
+    return this.eventEmitter.on('toolUpdated', cb);
+  }
+
   onRemovedTool(cb) {
     return this.eventEmitter.on('toolRemoved', cb);
   }
 
   getToolConfiguration() {
-    return this.tools.map(tool => ({
-      type: "function",
-      function: {
-        name: tool.name,
-        description: tool.description,
-        parameters: tool.parameterSchema,
-      }
-    }));
+    return this.tools
+      .filter(tool => tool.enabled)
+      .map(tool => ({
+        type: "function",
+        function: {
+          name: tool.name,
+          description: tool.description,
+          parameters: tool.parameterSchema,
+        }
+      }));
   }
 
   getToolsJSON() {

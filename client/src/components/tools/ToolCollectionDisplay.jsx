@@ -7,11 +7,16 @@ import { useBackend } from "../../BackendProvider";
 import { ToolDisplay } from "./ToolDisplay";
 import { AddToolModal } from "./AddToolModal";
 import { ToolDetailsModal } from "./ToolDetailsModal";
+import { useMemo } from "react";
 
 export const ToolCollectionDisplay = () => {
   const { tools, addTool } = useBackend();
   const [showAddToolModal, setShowAddToolModal] = useState(false);
   const [toolToDisplay, setToolToDisplay] = useState(null);
+
+  const sortedTools = useMemo(() => tools.sort(
+    (a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+  ), [tools]);
 
   const addTimeTool = useCallback(() => {
     addTool({
@@ -49,7 +54,7 @@ export const ToolCollectionDisplay = () => {
         { tools.length === 0 && <p><em>There are currently no tools available</em></p> }
 
 
-        {tools.map((tool) => (
+        {sortedTools.map((tool) => (
           <ToolDisplay key={tool.name} tool={tool} onClick={() => setToolToDisplay(tool)} />
         ))}
 

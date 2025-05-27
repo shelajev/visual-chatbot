@@ -90,6 +90,11 @@ export const BackendContextProvider = ({ children }) => {
       setTools((prevTools) => [...prevTools, tool]);
     });
 
+    socket.on("toolUpdated", (tool) => {
+      console.log("toolUpdated", tool);
+      setTools((prevTools) => [...prevTools.filter((t) => t.name !== tool.name), tool]);
+    });
+
     socket.on("toolRemoved", (tool) => {
       console.log("toolRemoved", tool);
       setTools((prevTools) => prevTools.filter((t) => t.name !== tool.name));
@@ -164,12 +169,21 @@ export const BackendContextProvider = ({ children }) => {
   }, []);
 
   const removeTool = useCallback(async (tool) => {
-    await makeRequest("/api/tools", {
+    await makeRequest(`/api/tools/${tool.name}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name: tool.name }),
+    });
+  }, []);
+
+  const setToolEnabled = useCallback(async (tool, enabled) => {
+    await makeRequest(`/api/tools/${tool.name}/enable`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ enabled }),
     });
   }, []);
 
@@ -210,6 +224,7 @@ export const BackendContextProvider = ({ children }) => {
       tools,
       addTool,
       removeTool,
+      setToolEnabled,
 
       mcpServers,
       addMcpServer,

@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import { useBackend } from "../../BackendProvider";
 
 export const ToolDisplay = ({ tool, onClick }) => {
-  const { removeTool } = useBackend();
+  const { removeTool, setToolEnabled } = useBackend();
 
   const onRemove = () => {
     if (confirm(`Are you sure you want to remove tool ${tool.name}?`)) {
@@ -11,8 +11,20 @@ export const ToolDisplay = ({ tool, onClick }) => {
   }
 
   return (
-    <div className="bg-light mb-3 d-flex" onClick={onClick}>
-      <div className="flex-grow-1">
+    <div className="bg-light mb-3 d-flex">
+      <div className="p-3">
+        <input
+          type="checkbox"
+          checked={tool.enabled}
+          onChange={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setToolEnabled(tool, e.target.checked);
+          }}
+          className="form-check-input"
+        />
+      </div>
+      <div className="flex-grow-1" onClick={onClick}>
         <div><strong>{tool.name}</strong> ({ tool.type })</div>
         <div><em>{ tool.description }</em></div>
       </div>
