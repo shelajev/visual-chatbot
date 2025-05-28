@@ -10,7 +10,7 @@ import { ToolDetailsModal } from "./ToolDetailsModal";
 import { useMemo } from "react";
 
 export const ToolCollectionDisplay = () => {
-  const { tools, addTool } = useBackend();
+  const { tools, addTool, disableAllTools, enableAllTools } = useBackend();
   const [showAddToolModal, setShowAddToolModal] = useState(false);
   const [toolToDisplay, setToolToDisplay] = useState(null);
 
@@ -53,10 +53,33 @@ export const ToolCollectionDisplay = () => {
 
         { tools.length === 0 && <p><em>There are currently no tools available</em></p> }
 
+        { tools.length > 0 && (
+          <>
+            <Button 
+              variant="outline-secondary"
+              onClick={() => disableAllTools()}
+              className="mb-3 me-3"
+            >
+              Disable all tools
+            </Button>
 
-        {sortedTools.map((tool) => (
-          <ToolDisplay key={tool.name} tool={tool} onClick={() => setToolToDisplay(tool)} />
-        ))}
+            <Button 
+              variant="outline-secondary"
+              onClick={() => enableAllTools()}
+              className="mb-3"
+            >
+              Enable all tools
+            </Button>
+
+            {sortedTools.map((tool) => (
+              <ToolDisplay key={tool.name} tool={tool} onClick={() => setToolToDisplay(tool)} />
+            ))}
+
+            <hr />
+          </>
+        )}
+
+
 
         {!tools.some((tool) => tool.name === "get-current-time") && (
           <Button 

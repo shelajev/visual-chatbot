@@ -187,6 +187,18 @@ export const BackendContextProvider = ({ children }) => {
     });
   }, []);
 
+  const disableAllTools = useCallback(async () => {
+    tools.forEach(async (tool) => {
+      await setToolEnabled(tool, false);
+    });
+  }, [tools, setToolEnabled]);
+
+  const enableAllTools = useCallback(async () => {
+    tools.forEach(async (tool) => {
+      await setToolEnabled(tool, true);
+    });
+  }, [tools, setToolEnabled]);
+
   const addMcpServer = useCallback(async (mcpServer) => {
     await makeRequest("/api/mcp-servers", {
       method: "POST",
@@ -225,6 +237,8 @@ export const BackendContextProvider = ({ children }) => {
       addTool,
       removeTool,
       setToolEnabled,
+      disableAllTools,
+      enableAllTools,
 
       mcpServers,
       addMcpServer,
