@@ -74,17 +74,16 @@ export const AddMcpServerDialog = ({ show, onClose }) => {
             </Form.Group>
 
             <Form.Group className="mb-4">
-              <Form.Label>Command</Form.Label>
+              <Form.Label>Command/HTTP SSE endpoint</Form.Label>
               <Form.Control 
-                as="textarea" 
-                rows={2} 
+                type="text"
                 required 
-                placeholder="Enter the command used to launch the server"
+                placeholder="`docker run ...` or `http://localhost:8000/sse`"
                 value={command} 
                 onChange={e => setCommand(e.target.value)} 
               />
               <Form.Text className="text-muted">
-                This command will be executed in order to launch the MCP server.
+                This command will be executed in order to launch the MCP server or be the URL to connect to.
               </Form.Text>
             </Form.Group>
 

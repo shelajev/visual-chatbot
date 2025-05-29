@@ -1,6 +1,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { ToolListChangedNotificationSchema } from "@modelcontextprotocol/sdk/types.js"
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { Tool } from "./tool.mjs";
 
 export class McpServer {
@@ -15,11 +16,18 @@ export class McpServer {
       version: "1.0.0",
     });
 
-    this.transport = new StdioClientTransport({
-      command, 
-      args,
-      stderr: "pipe",
-    });
+    if (command.startsWith("http")) {
+      const url = new URL(command);
+      this.transport = new SSEClientTransport(url);
+    }
+    else {
+      this.transport = new StdioClientTransport({
+        command, 
+        args,
+        stderr: "pipe",
+      });
+    }
+
   }
 
   async bootstrap() {
