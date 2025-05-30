@@ -11,8 +11,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://localhost:3000',
-      "/socket.io": "http://localhost:3000"
+      '/api': 'http://api:3000',
+      "/socket.io": "http://api:3000"
     }
   }
 })
